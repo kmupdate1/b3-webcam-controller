@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="presentation-jvm-0.0.1-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/presentation/build/libs</output-path>
+    <root id="archive" name="presentation-jvm-0.0.1-SNAPSHOT.jar">
+      <element id="module-output" name="b3-webcam-controller.presentation.jvmMain" />
+    </root>
+  </artifact>
+</component>
