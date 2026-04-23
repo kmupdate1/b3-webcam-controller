@@ -24,8 +24,6 @@ allprojects {
             credentials(PasswordCredentials::class) {
                 username = System.getenv("B3_REPO_USER")
                 password = System.getenv("B3_REPO_PASS")
-
-                println("Username and password: $username:$password")
             }
 
             authentication {
