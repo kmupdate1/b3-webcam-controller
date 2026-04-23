@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.bluebikebase"
-version = "1.0-SNAPSHOT"
+version = ""
 
 repositories {
     mavenCentral()
