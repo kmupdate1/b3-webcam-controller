@@ -1,4 +1,4 @@
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
 rootProject.name = "b3-webcam-controller"
+
+include(":domain")
+include(":infrastructure")

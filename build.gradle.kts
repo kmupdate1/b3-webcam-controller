@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "2.3.10"
+    alias { libs.plugins.kotlin.multiplatform } apply false
 }
 
 group = "org.bluebikebase"
@@ -7,16 +7,4 @@ version = ""
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-kotlin {
-    jvmToolchain(21)
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
