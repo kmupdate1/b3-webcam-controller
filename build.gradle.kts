@@ -1,3 +1,5 @@
+import java.net.URI
+
 plugins {
     `maven-publish`
     alias { libs.plugins.kotlin.multiplatform } apply false
@@ -6,22 +8,24 @@ plugins {
 val isRelease = project.hasProperty("release") && project.property("release") == "true"
 val v = rootProject.property("library.version")?.toString() ?: "unspecified"
 
-val repoType = if (isRelease) "releases" else "snapshots"
+val repoType = "bluebikebase-" + if (isRelease) "releases" else "snapshots"
 val domain = rootProject.property("repository.domain")?.toString()
-val repositoryUri = "https://$domain/repository/bluebikebase-$repoType/"
+fun repositoryUri(target: String): URI = uri("https://$domain/repository/$target/")
 
 allprojects {
-    group = "org.bluebikebase"
+    group = "org.bluebikebase.iot"
     version = if (isRelease) v else "$v-SNAPSHOT"
 
     repositories {
         mavenCentral()
         maven {
-            url = uri(repositoryUri)
+            url = repositoryUri("bluebikebase-releases")
 
             credentials(PasswordCredentials::class) {
                 username = System.getenv("B3_REPO_USER")
                 password = System.getenv("B3_REPO_PASS")
+
+                println("Username and password: $username:$password")
             }
 
             authentication {
@@ -34,16 +38,9 @@ allprojects {
 subprojects {
     plugins.withId("maven-publish") {
         configure<PublishingExtension> {
-            publications {
-
-                withType<MavenPublication>().configureEach {
-                    if (artifactId == project.name + "-kotlinMultiplatform") artifactId = project.name
-                }
-            }
-
             repositories {
                 maven {
-                    url = uri(repositoryUri)
+                    url = repositoryUri(repoType)
 
                     credentials(PasswordCredentials::class) {
                         username = System.getenv("B3_REPO_USER")

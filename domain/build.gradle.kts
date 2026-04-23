@@ -10,6 +10,8 @@ kotlin {
     linuxArm64()
 
     sourceSets {
-
+        commonMain.dependencies {
+            implementation(libs.bluebikebase.core)
+        }
     }
 }
