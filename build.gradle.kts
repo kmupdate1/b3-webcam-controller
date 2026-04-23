@@ -1,4 +1,5 @@
 plugins {
+    `maven-publish`
     alias { libs.plugins.kotlin.multiplatform } apply false
 }
 
@@ -30,6 +31,30 @@ allprojects {
     }
 }
 
-repositories {
-    mavenCentral()
+subprojects {
+    plugins.withId("maven-publish") {
+        configure<PublishingExtension> {
+            publications {
+
+                withType<MavenPublication>().configureEach {
+                    if (artifactId == project.name + "-kotlinMultiplatform") artifactId = project.name
+                }
+            }
+
+            repositories {
+                maven {
+                    url = uri(repositoryUri)
+
+                    credentials(PasswordCredentials::class) {
+                        username = System.getenv("B3_REPO_USER")
+                        password = System.getenv("B3_REPO_PASS")
+                    }
+
+                    authentication {
+                        create<BasicAuthentication>("basic")
+                    }
+                }
+            }
+        }
+    }
 }
