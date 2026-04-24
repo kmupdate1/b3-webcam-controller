@@ -23,4 +23,12 @@ class CameraControlUseCase(
         motion.move(horizontal = p, vertical = t)
         zoom.zoom(velocity = z)
     }
+
+    /**
+     * 緊急停止用
+     */
+    fun stopAll() {
+        motion.stopMotion()
+        zoom.stopZoom()
+    }
 }
