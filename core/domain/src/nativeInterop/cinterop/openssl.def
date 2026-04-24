@@ -1,0 +1,7 @@
+headers = openssl/sha.h
+
+headerFilter = openssl/sha.h
+
+compilerOpts.linux = -I/usr/include
+
+linkerOpts.linux = -lcrypto

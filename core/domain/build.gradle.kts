@@ -7,7 +7,15 @@ kotlin {
     jvm {
 
     }
-    linuxArm64()
+    linuxArm64 {
+        /*
+        compilations["main"].cinterops {
+            val openssl by creating {
+                defFile(project.file("src/nativeInterop/cinterop/openssl.def"))
+            }
+        }
+        */
+    }
 
     sourceSets {
         commonMain.dependencies {
