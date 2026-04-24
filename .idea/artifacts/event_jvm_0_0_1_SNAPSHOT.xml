@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="event-jvm-0.0.1-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/ioe/event/build/libs</output-path>
+    <root id="archive" name="event-jvm-0.0.1-SNAPSHOT.jar" />
+  </artifact>
+</component>

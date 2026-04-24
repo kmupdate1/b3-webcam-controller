@@ -8,10 +8,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/application" />
-            <option value="$PROJECT_DIR$/domain" />
-            <option value="$PROJECT_DIR$/infrastructure" />
-            <option value="$PROJECT_DIR$/presentation" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/application" />
+            <option value="$PROJECT_DIR$/core/domain" />
+            <option value="$PROJECT_DIR$/ioe" />
+            <option value="$PROJECT_DIR$/ioe/camera" />
+            <option value="$PROJECT_DIR$/ioe/event" />
+            <option value="$PROJECT_DIR$/kernel" />
           </set>
         </option>
         <option name="myGradleHome" value="" />

@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="domain-jvm-0.0.1-SNAPSHOT">
-    <output-path>$PROJECT_DIR$/domain/build/libs</output-path>
-    <root id="archive" name="domain-jvm-0.0.1-SNAPSHOT.jar">
-      <element id="module-output" name="b3-webcam-controller.domain.jvmMain" />
-    </root>
+    <output-path>$PROJECT_DIR$/core/domain/build/libs</output-path>
+    <root id="archive" name="domain-jvm-0.0.1-SNAPSHOT.jar" />
   </artifact>
 </component>
