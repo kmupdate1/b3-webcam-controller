@@ -20,5 +20,5 @@ interface Zoom {
     /**
      * ズームを停止する
      */
-    fun stop() = zoom(Vector.STATIONARY)
+    fun stopZoom() = zoom(Vector.STATIONARY)
 }

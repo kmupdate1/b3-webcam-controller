@@ -19,5 +19,5 @@ interface Motion {
     /**
      * 全ての軸を安全に停止させる
      */
-    fun stop() = move(Vector.STATIONARY, Vector.STATIONARY)
+    fun stopMotion() = move(Vector.STATIONARY, Vector.STATIONARY)
 }
