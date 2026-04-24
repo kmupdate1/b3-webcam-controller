@@ -1,9 +1,11 @@
 [versions]
 kotlin="2.3.0"
 b3-lib="0.1.4-SNAPSHOT"
+kotlin-crypto="0.8.0"
 
 [libraries]
 bluebikebase-core = { group = "org.bluebikebase", name = "core", version.ref = "b3-lib" }
+kotlincrypto-hash-sha2 = { group = "org.kotlincrypto.hash", name = "sha2", version.ref = "kotlin-crypto" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

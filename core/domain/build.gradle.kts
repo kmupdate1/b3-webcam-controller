@@ -16,5 +16,8 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
+        linuxMain.dependencies {
+            implementation(libs.kotlincrypto.hash.sha2)
+        }
     }
 }
