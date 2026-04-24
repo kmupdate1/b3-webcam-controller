@@ -14,21 +14,21 @@ class TestCameraName {
     @Test
     fun `constructor null name test`() {
         val result = runCatching { CameraName.of(null) }
-            .onFailure { it.printStackTrace() }
+            .onFailure { println(it.message) }
         assertTrue(result.isFailure)
     }
 
     @Test
     fun `constructor empty name test`() {
         val result = runCatching { CameraName.of("") }
-            .onFailure { it.printStackTrace() }
+            .onFailure { println(it.message) }
         assertTrue(result.isFailure)
     }
 
     @Test
     fun `constructor has-blank name test`() {
         val result = runCatching { CameraName.of(" ") }
-            .onFailure { it.printStackTrace() }
+            .onFailure { println(it.message) }
         assertTrue(result.isFailure)
     }
 
@@ -53,14 +53,14 @@ class TestCameraName {
     @Test
     fun `constructor invalid char name test`() {
         val result = runCatching { CameraName.of("b3c-£alpha#-£0001") }
-            .onFailure { it.printStackTrace() }
+            .onFailure { println(it.message) }
         assertTrue(result.isFailure)
     }
 
     @Test
     fun `constructor uniqueness name test`() {
-        val name1 = CameraName.of("B3C-Alpha-0001").also { println(it) }
-        val name2 = CameraName.of("B3C-Alpha-0001").also { println(it) }
+        val name1 = CameraName.of("B3C-Alpha-0001").also { println(it.name) }
+        val name2 = CameraName.of("B3C-Alpha-0001").also { println(it.name) }
         assertTrue { name1 != name2 }
     }
 

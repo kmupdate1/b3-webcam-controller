@@ -10,6 +10,8 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class CameraName private constructor(val name: String) {
     companion object {
+        private const val DELIMITER = '@'
+
         @Throws(B3WCCInvalidValidationException::class)
         fun of(input: String?): CameraName  {
             val row = validate(input = input, lazyMessage = { "Usage symbol only '-' or '_'" }) {
@@ -25,14 +27,14 @@ value class CameraName private constructor(val name: String) {
             val suffix = Base64.UrlSafe.encode(hash.take(10).toByteArray())
                 .replace("=", "")
 
-            val finalName = "$row@$suffix"
+            val finalName = row + DELIMITER + suffix
             val valid = validate(input = finalName, lazyMessage = { "Invalid format : [$finalName]" }) {
-                it.all { c -> c.isLetterOrDigit() || c == '_' || c == '-' || c == '@' }
+                it.all { c -> c.isLetterOrDigit() || c == '_' || c == '-' || c == DELIMITER }
             }
 
             return CameraName(name = valid)
         }
     }
 
-    val simpleName get() = name.substringBefore('@')
+    val simpleName get() = name.substringBefore(DELIMITER)
 }

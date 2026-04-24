@@ -16,6 +16,7 @@ kotlin {
         }
         */
     }
+    macosArm64()
 
     sourceSets {
         commonMain.dependencies {
@@ -24,7 +25,7 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
-        linuxMain.dependencies {
+        nativeMain.dependencies {
             implementation(libs.kotlincrypto.hash.sha2)
         }
     }
