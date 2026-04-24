@@ -9,8 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/core/application" />
             <option value="$PROJECT_DIR$/core/domain" />
+            <option value="$PROJECT_DIR$/core/usecase" />
             <option value="$PROJECT_DIR$/ioe" />
             <option value="$PROJECT_DIR$/ioe/camera" />
             <option value="$PROJECT_DIR$/ioe/event" />
