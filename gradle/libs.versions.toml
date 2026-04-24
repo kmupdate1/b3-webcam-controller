@@ -1,6 +1,6 @@
 [versions]
 kotlin="2.3.0"
-b3-lib="0.1.3"
+b3-lib="0.1.4-SNAPSHOT"
 
 [libraries]
 bluebikebase-core = { group = "org.bluebikebase", name = "core", version.ref = "b3-lib" }

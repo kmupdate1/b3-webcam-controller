@@ -13,5 +13,8 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.bluebikebase.core)
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
     }
 }

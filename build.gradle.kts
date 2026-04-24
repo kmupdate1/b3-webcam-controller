@@ -19,7 +19,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            url = repositoryUri("bluebikebase-releases")
+            url = repositoryUri("bluebikebase-snapshots")
 
             credentials(PasswordCredentials::class) {
                 username = System.getenv("B3_REPO_USER")
