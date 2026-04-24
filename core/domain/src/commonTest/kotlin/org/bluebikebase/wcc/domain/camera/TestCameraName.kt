@@ -1,5 +1,6 @@
 package org.bluebikebase.wcc.domain.camera
 
+import org.bluebikebase.wcc.domain.camera.entity.CameraName
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

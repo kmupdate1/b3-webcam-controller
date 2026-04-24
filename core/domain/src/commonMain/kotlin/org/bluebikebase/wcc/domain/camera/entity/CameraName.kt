@@ -1,4 +1,4 @@
-package org.bluebikebase.wcc.domain.camera
+package org.bluebikebase.wcc.domain.camera.entity
 
 import org.bluebikebase.core.quantity.HeartBeat
 import org.bluebikebase.wcc.domain.common.validate
