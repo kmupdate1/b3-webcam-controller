@@ -1,5 +1,6 @@
 package org.bluebikebase.wcc.domain.util
 
-actual fun generateHash(seed: ByteArray): ByteArray {
-    TODO("Not yet implemented")
-}
+import org.kotlincrypto.hash.sha2.SHA256
+
+actual fun generateHash(seed: ByteArray): ByteArray =
+    TODO()
