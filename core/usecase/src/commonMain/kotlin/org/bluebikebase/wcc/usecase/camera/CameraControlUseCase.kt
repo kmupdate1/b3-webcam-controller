@@ -3,10 +3,12 @@ package org.bluebikebase.wcc.usecase.camera
 import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.wcc.domain.camera.agreement.Motion
 import org.bluebikebase.wcc.domain.camera.agreement.Zoom
+import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 class CameraControlUseCase(
     private val motion: Motion,
     private val zoom: Zoom,
+    private val camera: Camera,
 ) {
     /**
      * ジョイスティックの生入力をベクトルに変換

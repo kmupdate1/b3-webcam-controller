@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import kotlinx.coroutines.channels.Channel
 import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
 import org.bluebikebase.wcc.domain.camera.agreement.Motion
@@ -12,13 +13,12 @@ import org.bluebikebase.wcc.domain.camera.entity.Camera
 import org.bluebikebase.wcc.ioe.util.client
 
 class DirectWsMotionClient(
-    private val camera: Camera,
     private val httpClient: HttpClient,
 ) : Motion, Zoom {
-    suspend fun connect() {
-        val range = client.get("http://${camera.ipv4Address}/config").body<ScalarDRange>()
+    suspend fun connect(target: Camera) {
+        val range = client.get("http://${target.ipv4Address}/config").body<ScalarDRange>()
 
-        client.webSocket(host = camera.ipv4Address, path = "/control") {
+        client.webSocket(host = target.ipv4Address, path = "/control") {
 
         }
     }
@@ -41,4 +41,7 @@ class DirectWsMotionClient(
     override fun zoom(velocity: Vector) {
         TODO("Not yet implemented")
     }
+
+    private val motionChannel = Channel<Pair<Vector, Vector>>(Channel.CONFLATED)
+    private val zoomChannel = Channel<Vector>(Channel.CONFLATED)
 }

@@ -4,11 +4,8 @@ import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
 import org.bluebikebase.wcc.domain.camera.agreement.Motion
 import org.bluebikebase.wcc.domain.camera.agreement.Zoom
-import org.bluebikebase.wcc.domain.camera.entity.Camera
 
-class LocalPythonMotionClient(
-    private val camera: Camera
-) : Motion, Zoom {
+class LocalPythonMotionClient : Motion, Zoom {
     override val horizontalLimit: ScalarDRange
         get() = TODO("Not yet implemented")
     override val verticalLimit: ScalarDRange
