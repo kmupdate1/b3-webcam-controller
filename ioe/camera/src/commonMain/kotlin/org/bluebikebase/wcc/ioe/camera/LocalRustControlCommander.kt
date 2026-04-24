@@ -8,25 +8,17 @@ import org.bluebikebase.wcc.domain.camera.agreement.Zoom
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 class LocalRustControlCommander : Motion, Zoom {
-    override val horizontalLimit: ScalarDRange
-        get() = TODO("Not yet implemented")
-    override val verticalLimit: ScalarDRange
-        get() = TODO("Not yet implemented")
-
-    override fun move(
-        target: Camera,
-        horizontal: Vector,
-        vertical: Vector
-    ) {
-        TODO("Not yet implemented")
+    override fun move(target: Camera, horizontal: Vector, vertical: Vector) {
+        motionChannel.trySend(horizontal to vertical)
     }
-
-    override val zoomRange: ScalarDRange
-        get() = TODO("Not yet implemented")
 
     override fun zoom(target: Camera, velocity: Vector) {
         TODO("Not yet implemented")
     }
+
+    private val horizontalLimit by lazy<ScalarDRange> { TODO() }
+    private val verticalLimit by lazy<ScalarDRange> { TODO() }
+    private val zoomRange by lazy<ScalarDRange> { TODO() }
 
     private val motionChannel = Channel<Pair<Vector, Vector>>(Channel.CONFLATED)
     private val zoomChannel = Channel<Vector>(Channel.CONFLATED)

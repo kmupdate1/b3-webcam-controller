@@ -1,6 +1,7 @@
 plugins {
     `maven-publish`
     alias { libs.plugins.kotlin.multiplatform }
+    alias { libs.plugins.kotlin.serialization }
 }
 
 kotlin {
@@ -17,6 +18,7 @@ kotlin {
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.serialization)
 
             implementation(project(":core:domain"))
         }

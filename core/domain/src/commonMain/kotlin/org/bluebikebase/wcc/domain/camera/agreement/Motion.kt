@@ -1,16 +1,9 @@
 package org.bluebikebase.wcc.domain.camera.agreement
 
 import org.bluebikebase.core.algebra.Vector
-import org.bluebikebase.core.geometry.ScalarDRange
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 interface Motion {
-    /**
-     * カメラの動作範囲の器
-     */
-    val horizontalLimit: ScalarDRange
-    val verticalLimit: ScalarDRange
-
     /**
      * @param horizontal 水平方向のベクトル（Vector.STATIONARYで停止）
      * @param vertical 垂直方向のベクトル（Vector.STATIONARYで停止）

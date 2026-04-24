@@ -3,6 +3,7 @@ import java.net.URI
 plugins {
     `maven-publish`
     alias { libs.plugins.kotlin.multiplatform } apply false
+    alias { libs.plugins.kotlin.serialization } apply false
 }
 
 val isRelease = project.hasProperty("release") && project.property("release") == "true"
