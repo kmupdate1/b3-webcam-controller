@@ -4,6 +4,7 @@ import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
 import org.bluebikebase.wcc.domain.camera.agreement.Motion
 import org.bluebikebase.wcc.domain.camera.agreement.Zoom
+import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 class LocalPythonMotionClient : Motion, Zoom {
     override val horizontalLimit: ScalarDRange
@@ -12,6 +13,7 @@ class LocalPythonMotionClient : Motion, Zoom {
         get() = TODO("Not yet implemented")
 
     override fun move(
+        target: Camera,
         horizontal: Vector,
         vertical: Vector
     ) {
@@ -21,7 +23,7 @@ class LocalPythonMotionClient : Motion, Zoom {
     override val zoomRange: ScalarDRange
         get() = TODO("Not yet implemented")
 
-    override fun zoom(velocity: Vector) {
+    override fun zoom(target: Camera, velocity: Vector) {
         TODO("Not yet implemented")
     }
 }

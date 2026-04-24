@@ -2,6 +2,7 @@ package org.bluebikebase.wcc.domain.camera.agreement
 
 import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
+import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 interface Zoom {
     /**
@@ -15,10 +16,10 @@ interface Zoom {
      *  - Negative: Wide（広角・引く）
      *  - STATIONARY: 停止
      */
-    fun zoom(velocity: Vector)
+    fun zoom(target: Camera, velocity: Vector)
 
     /**
      * ズームを停止する
      */
-    fun stopZoom() = zoom(Vector.STATIONARY)
+    fun stopZoom(target: Camera) = zoom(target, Vector.STATIONARY)
 }

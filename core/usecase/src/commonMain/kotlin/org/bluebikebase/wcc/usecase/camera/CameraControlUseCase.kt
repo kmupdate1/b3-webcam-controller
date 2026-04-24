@@ -22,15 +22,15 @@ class CameraControlUseCase(
         t: Vector = Vector.STATIONARY,
         z: Vector = Vector.STATIONARY,
     ) {
-        motion.move(horizontal = p, vertical = t)
-        zoom.zoom(velocity = z)
+        motion.move(target = camera, horizontal = p, vertical = t)
+        zoom.zoom(target = camera, velocity = z)
     }
 
     /**
      * 緊急停止用
      */
     fun stopAll() {
-        motion.stopMotion()
-        zoom.stopZoom()
+        motion.stopMotion(target = camera)
+        zoom.stopZoom(target = camera)
     }
 }

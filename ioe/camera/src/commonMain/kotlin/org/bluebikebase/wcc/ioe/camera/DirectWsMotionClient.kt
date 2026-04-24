@@ -29,6 +29,7 @@ class DirectWsMotionClient(
         get() = TODO("Not yet implemented")
 
     override fun move(
+        target: Camera,
         horizontal: Vector,
         vertical: Vector
     ) {
@@ -38,7 +39,7 @@ class DirectWsMotionClient(
     override val zoomRange: ScalarDRange
         get() = TODO("Not yet implemented")
 
-    override fun zoom(velocity: Vector) {
+    override fun zoom(target: Camera, velocity: Vector) {
         TODO("Not yet implemented")
     }
 
