@@ -18,9 +18,15 @@ kotlin {
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.logging)
             implementation(libs.ktor.serialization)
 
             implementation(project(":core:domain"))
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

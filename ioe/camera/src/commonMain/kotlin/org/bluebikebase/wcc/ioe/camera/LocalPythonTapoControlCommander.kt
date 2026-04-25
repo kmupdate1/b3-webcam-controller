@@ -3,6 +3,8 @@ package org.bluebikebase.wcc.ioe.camera
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -17,8 +19,12 @@ import org.bluebikebase.wcc.domain.camera.entity.Camera
 class LocalPythonTapoControlCommander(
     private val httpClient: HttpClient,
 ) : Motion, Zoom {
+    /**
+     * プロキシがウェブカメラとのセッションを構成させるためのコマンド
+     */
     suspend fun startSession(target: Camera) {
         httpClient.post("http://localhost:8000/control") {
+            contentType(ContentType.Application.Json)
             setBody(
                 mapOf(
                     "auth" to mapOf(
@@ -31,8 +37,19 @@ class LocalPythonTapoControlCommander(
         }
     }
 
+    /**
+     * セッションを閉じる
+     */
     suspend fun endSession() {
         httpClient.post("http://localhost:8000/reset")
+    }
+
+    suspend fun fetchSpecs() {
+        val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
+
+        horizontalLimit = response.horizontalRange.let { ScalarDRange(start = it.min, end = it.max) }
+        verticalLimit = response.verticalRange.let { ScalarDRange(start = it.min, end = it.max) }
+        zoomRange = response.isZoomSupported
     }
 
     override fun move(target: Camera, horizontal: Vector, vertical: Vector) {
@@ -61,14 +78,5 @@ class LocalPythonTapoControlCommander(
 
     private val motionChannel = Channel<Pair<Vector, Vector>>(Channel.CONFLATED)
     private val zoomChannel = Channel<Vector>(Channel.CONFLATED)
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
-
-            horizontalLimit = response.horizontalRange.let { ScalarDRange(start = it.min, end = it.max) }
-            verticalLimit = response.verticalRange.let { ScalarDRange(start = it.min, end = it.max) }
-            zoomRange = response.isZoomSupported
-        }
-    }
 }
+
