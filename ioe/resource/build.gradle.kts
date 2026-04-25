@@ -1,24 +1,21 @@
-import org.gradle.kotlin.dsl.`maven-publish`
-
 plugins {
     `maven-publish`
     alias { libs.plugins.kotlin.multiplatform }
 }
 
 kotlin {
-    jvm {
-
-    }
+    jvm()
     linuxArm64()
     macosArm64()
 
     sourceSets {
         commonMain.dependencies {
             implementation(libs.bluebikebase.core)
-            implementation(project(":core:domain"))
+            implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

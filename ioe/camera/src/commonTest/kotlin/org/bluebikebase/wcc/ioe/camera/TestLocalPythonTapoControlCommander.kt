@@ -2,14 +2,12 @@ package org.bluebikebase.wcc.ioe.camera
 
 import kotlinx.coroutines.test.runTest
 import org.bluebikebase.core.algebra.Vector
-import org.bluebikebase.core.algebra.extensions.sVal
 import org.bluebikebase.core.foundation.ScalarD
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 import org.bluebikebase.wcc.domain.camera.entity.CameraId
 import org.bluebikebase.wcc.domain.camera.entity.CameraName
 import org.bluebikebase.wcc.ioe.util.Client
 import kotlin.test.Test
-import kotlin.test.assertTrue
 
 class TestLocalPythonTapoControlCommander {
     @Test
@@ -66,6 +64,18 @@ class TestLocalPythonTapoControlCommander {
                 target = camera,
                 horizontal = Vector.STATIONARY,
                 vertical = Vector.of(ScalarD.ONE.inversion),
+            )
+        }
+            .onFailure { it.printStackTrace() }
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander motion left and up test`() = runTest {
+        runCatching {
+            commander.move(
+                target = camera,
+                horizontal = Vector.of(ScalarD.ONE.inversion),
+                vertical = Vector.of(ScalarD.ONE),
             )
         }
             .onFailure { it.printStackTrace() }

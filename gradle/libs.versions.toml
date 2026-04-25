@@ -19,6 +19,7 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization", version.ref = "ktor" }
 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.11.0" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx" }
 
 [plugins]

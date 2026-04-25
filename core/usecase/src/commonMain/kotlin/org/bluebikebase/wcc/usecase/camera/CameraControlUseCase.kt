@@ -17,7 +17,7 @@ class CameraControlUseCase(
      * @param t 垂直方向の値をベクトルで受け取る
      * @param z ズームの値をベクトルで受け取る
      */
-    operator fun invoke(
+    suspend operator fun invoke(
         p: Vector = Vector.STATIONARY,
         t: Vector = Vector.STATIONARY,
         z: Vector = Vector.STATIONARY,
@@ -29,7 +29,7 @@ class CameraControlUseCase(
     /**
      * 緊急停止用
      */
-    fun stopAll() {
+    suspend fun stopAll() {
         motion.stopMotion(target = camera)
         zoom.stopZoom(target = camera)
     }

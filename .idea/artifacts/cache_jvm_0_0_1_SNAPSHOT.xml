@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="cache-jvm-0.0.1-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/ioe/cache/build/libs</output-path>
+    <root id="archive" name="cache-jvm-0.0.1-SNAPSHOT.jar">
+      <element id="module-output" name="b3-webcam-controller.ioe.cache.jvmMain" />
+    </root>
+  </artifact>
+</component>
