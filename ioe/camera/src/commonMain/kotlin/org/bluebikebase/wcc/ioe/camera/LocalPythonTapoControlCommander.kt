@@ -18,9 +18,6 @@ class LocalPythonTapoControlCommander(
     private val httpClient: HttpClient,
 ) : Motion, Zoom {
     suspend fun startSession(target: Camera) {
-        val response = httpClient.get("http://localhost:8000/specs")
-            .body<TapoCamSpecs>()
-
         httpClient.post("http://localhost:8000/control") {
             setBody(
                 mapOf(
@@ -58,10 +55,20 @@ class LocalPythonTapoControlCommander(
         TODO("Not yet implemented")
     }
 
-    private val horizontalLimit by lazy<ScalarDRange> { TODO() }
-    private val verticalLimit by lazy<ScalarDRange> { TODO() }
-    private val zoomRange by lazy<ScalarDRange> { TODO() }
+    private lateinit var horizontalLimit: ScalarDRange
+    private lateinit var verticalLimit: ScalarDRange
+    private var zoomRange: Boolean = false
 
     private val motionChannel = Channel<Pair<Vector, Vector>>(Channel.CONFLATED)
     private val zoomChannel = Channel<Vector>(Channel.CONFLATED)
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
+
+            horizontalLimit = response.horizontalRange.let { ScalarDRange(start = it.min, end = it.max) }
+            verticalLimit = response.verticalRange.let { ScalarDRange(start = it.min, end = it.max) }
+            zoomRange = response.isZoomSupported
+        }
+    }
 }
