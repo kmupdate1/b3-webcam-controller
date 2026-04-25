@@ -1,8 +1,5 @@
 package org.bluebikebase.wcc.ioe.camera
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 import org.bluebikebase.wcc.domain.camera.entity.CameraId

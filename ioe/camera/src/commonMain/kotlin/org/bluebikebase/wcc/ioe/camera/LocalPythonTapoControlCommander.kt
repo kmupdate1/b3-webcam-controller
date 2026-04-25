@@ -12,17 +12,18 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
+import org.bluebikebase.wcc.domain.camera.agreement.Initializable
 import org.bluebikebase.wcc.domain.camera.agreement.Motion
 import org.bluebikebase.wcc.domain.camera.agreement.Zoom
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 
 class LocalPythonTapoControlCommander(
     private val httpClient: HttpClient,
-) : Motion, Zoom {
+) : Initializable, Motion, Zoom {
     /**
      * プロキシがウェブカメラとのセッションを構成させるためのコマンド
      */
-    suspend fun startSession(target: Camera) {
+    override suspend fun startSession(target: Camera) {
         httpClient.post("http://localhost:8000/control") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -40,11 +41,14 @@ class LocalPythonTapoControlCommander(
     /**
      * セッションを閉じる
      */
-    suspend fun endSession() {
+    override suspend fun endSession() {
         httpClient.post("http://localhost:8000/reset")
     }
 
-    suspend fun fetchSpecs() {
+    /**
+     * カメラスペックを取得する
+     */
+    override suspend fun fetchSpecs() {
         val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
 
         horizontalLimit = response.horizontalRange.let { ScalarDRange(start = it.min, end = it.max) }
@@ -79,4 +83,3 @@ class LocalPythonTapoControlCommander(
     private val motionChannel = Channel<Pair<Vector, Vector>>(Channel.CONFLATED)
     private val zoomChannel = Channel<Vector>(Channel.CONFLATED)
 }
-
