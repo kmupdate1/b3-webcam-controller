@@ -1,13 +1,10 @@
 package org.bluebikebase.wcc.ioe.util
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
+import io.ktor.client.plugins.websocket.*
 import kotlinx.serialization.json.Json
 
 val Client = HttpClient(CIO) {
@@ -17,6 +14,6 @@ val Client = HttpClient(CIO) {
     }
     install(Logging) {
         level = LogLevel.ALL
-        logger = Logger.DEFAULT
+        logger = Logger.SIMPLE
     }
 }

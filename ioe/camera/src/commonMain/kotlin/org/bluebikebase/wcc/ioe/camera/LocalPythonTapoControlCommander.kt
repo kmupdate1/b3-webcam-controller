@@ -3,13 +3,12 @@ package org.bluebikebase.wcc.ioe.camera
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import io.ktor.http.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 import org.bluebikebase.core.algebra.Vector
 import org.bluebikebase.core.geometry.ScalarDRange
 import org.bluebikebase.wcc.domain.camera.agreement.Initializable
@@ -24,17 +23,17 @@ class LocalPythonTapoControlCommander(
      * プロキシがウェブカメラとのセッションを確立させるためのコマンドAPI
      */
     override suspend fun startSession(target: Camera) {
-        httpClient.post("http://localhost:8000/control") {
+        val body = buildJsonObject {
+            putJsonObject("auth") {
+                put("ip", target.ipv4Address)
+                put("user", target.username)
+                put("pass", target.password)
+            }
+        }
+
+        httpClient.post("http://kens-mac-mini:8000/control") {
             contentType(ContentType.Application.Json)
-            setBody(
-                mapOf(
-                    "auth" to mapOf(
-                        "ip" to target.ipv4Address,
-                        "user" to target.username,
-                        "pass" to target.password,
-                    )
-                )
-            )
+            setBody(Json.encodeToString(body))
         }
     }
 
@@ -42,33 +41,31 @@ class LocalPythonTapoControlCommander(
      * プロキシがウェブカメラとのセッションを閉じさせるためのコマンドAPI
      */
     override suspend fun endSession() {
-        httpClient.post("http://localhost:8000/reset")
+        httpClient.post("http://kens-mac-mini:8000/reset")
     }
 
     /**
      * プロキシにウェブカメラのスペックを取得させるためのコマンドAPI
      */
     override suspend fun fetchSpecs() {
-        val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
+        val response = httpClient.get("http://kens-mac-mini:8000/specs").body<TapoCamSpecs>()
 
         horizontalLimit = response.horizontalRange.let { ScalarDRange(start = it.min, end = it.max) }
         verticalLimit = response.verticalRange.let { ScalarDRange(start = it.min, end = it.max) }
         zoomRange = response.isZoomSupported
     }
 
-    override fun move(target: Camera, horizontal: Vector, vertical: Vector) {
-        motionChannel.trySend(horizontal to vertical)
-        CoroutineScope(Dispatchers.IO).launch {
-            httpClient.post("http://localhost:8000/control") {
-                setBody(
-                    mapOf(
-                        "move" to mapOf(
-                            "x" to horizontal.magnitude,
-                            "y" to vertical.magnitude,
-                        )
-                    )
-                )
+    override suspend fun move(target: Camera, horizontal: Vector, vertical: Vector) {
+        val body = buildJsonObject {
+            putJsonObject("move") {
+                put("x", horizontal.run { magnitude * direction.multiplier }.value)
+                put("y", vertical.run { magnitude * direction.multiplier }.value)
             }
+        }
+
+        httpClient.post("http://kens-mac-mini:8000/control") {
+            contentType(ContentType.Application.Json)
+            setBody(Json.encodeToString(body))
         }
     }
 

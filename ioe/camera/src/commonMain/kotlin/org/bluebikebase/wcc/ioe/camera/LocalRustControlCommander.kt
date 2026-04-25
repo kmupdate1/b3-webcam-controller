@@ -24,7 +24,7 @@ class LocalRustControlCommander(
         TODO("Not yet implemented")
     }
 
-    override fun move(target: Camera, horizontal: Vector, vertical: Vector) {
+    override suspend fun move(target: Camera, horizontal: Vector, vertical: Vector) {
         motionChannel.trySend(horizontal to vertical)
     }
 

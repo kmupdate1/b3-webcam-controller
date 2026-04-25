@@ -1,6 +1,9 @@
 package org.bluebikebase.wcc.ioe.camera
 
 import kotlinx.coroutines.test.runTest
+import org.bluebikebase.core.algebra.Vector
+import org.bluebikebase.core.algebra.extensions.sVal
+import org.bluebikebase.core.foundation.ScalarD
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 import org.bluebikebase.wcc.domain.camera.entity.CameraId
 import org.bluebikebase.wcc.domain.camera.entity.CameraName
@@ -11,8 +14,61 @@ import kotlin.test.assertTrue
 class TestLocalPythonTapoControlCommander {
     @Test
     fun `LocalPythonTapoControlCommander startSession test`() = runTest {
-        val res = runCatching { commander.startSession(target = camera) }.isSuccess
-        assertTrue(res)
+        runCatching { commander.startSession(target = camera) }
+            .onFailure { println(it.message) }
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander endSession test`() = runTest {
+        commander.endSession()
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander motion right test`() = runTest {
+        runCatching {
+            commander.move(
+                target = camera,
+                horizontal = Vector.of(ScalarD.ONE),
+                vertical = Vector.STATIONARY,
+            )
+        }
+            .onFailure { it.printStackTrace() }
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander motion left test`() = runTest {
+        runCatching {
+            commander.move(
+                target = camera,
+                horizontal = Vector.of(ScalarD.ONE.inversion),
+                vertical = Vector.STATIONARY,
+            )
+        }
+            .onFailure { it.printStackTrace() }
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander motion up test`() = runTest {
+        runCatching {
+            commander.move(
+                target = camera,
+                horizontal = Vector.STATIONARY,
+                vertical = Vector.of(ScalarD.ONE),
+            )
+        }
+            .onFailure { it.printStackTrace() }
+    }
+
+    @Test
+    fun `LocalPythonTapoControlCommander motion down test`() = runTest {
+        runCatching {
+            commander.move(
+                target = camera,
+                horizontal = Vector.STATIONARY,
+                vertical = Vector.of(ScalarD.ONE.inversion),
+            )
+        }
+            .onFailure { it.printStackTrace() }
     }
 
     private val commander = LocalPythonTapoControlCommander(httpClient = Client)

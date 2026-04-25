@@ -8,10 +8,10 @@ interface Motion {
      * @param horizontal 水平方向のベクトル（Vector.STATIONARYで停止）
      * @param vertical 垂直方向のベクトル（Vector.STATIONARYで停止）
      */
-    fun move(target: Camera, horizontal: Vector, vertical: Vector)
+    suspend fun move(target: Camera, horizontal: Vector, vertical: Vector)
 
     /**
      * 全ての軸を安全に停止させる
      */
-    fun stopMotion(target: Camera) = move(target, Vector.STATIONARY, Vector.STATIONARY)
+    suspend fun stopMotion(target: Camera) = move(target, Vector.STATIONARY, Vector.STATIONARY)
 }
