@@ -21,7 +21,7 @@ class LocalPythonTapoControlCommander(
     private val httpClient: HttpClient,
 ) : Initializable, Motion, Zoom {
     /**
-     * プロキシがウェブカメラとのセッションを構成させるためのコマンド
+     * プロキシがウェブカメラとのセッションを確立させるためのコマンドAPI
      */
     override suspend fun startSession(target: Camera) {
         httpClient.post("http://localhost:8000/control") {
@@ -39,14 +39,14 @@ class LocalPythonTapoControlCommander(
     }
 
     /**
-     * セッションを閉じる
+     * プロキシがウェブカメラとのセッションを閉じさせるためのコマンドAPI
      */
     override suspend fun endSession() {
         httpClient.post("http://localhost:8000/reset")
     }
 
     /**
-     * カメラスペックを取得する
+     * プロキシにウェブカメラのスペックを取得させるためのコマンドAPI
      */
     override suspend fun fetchSpecs() {
         val response = httpClient.get("http://localhost:8000/specs").body<TapoCamSpecs>()
