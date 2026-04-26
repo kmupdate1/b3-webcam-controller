@@ -2,6 +2,7 @@ package org.bluebikebase.wcc.ioe.camera
 
 import kotlinx.coroutines.test.runTest
 import org.bluebikebase.core.algebra.Vector
+import org.bluebikebase.core.algebra.extensions.sVal
 import org.bluebikebase.core.foundation.ScalarD
 import org.bluebikebase.wcc.domain.camera.entity.Camera
 import org.bluebikebase.wcc.domain.camera.entity.CameraId
@@ -63,7 +64,7 @@ class TestLocalPythonTapoControlCommander {
             commander.move(
                 target = camera,
                 horizontal = Vector.STATIONARY,
-                vertical = Vector.of(ScalarD.ONE.inversion),
+                vertical = Vector.of(ScalarD.DECI.inversion * 10.sVal),
             )
         }
             .onFailure { it.printStackTrace() }
