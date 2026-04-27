@@ -1,5 +1,7 @@
 package org.bluebikebase.ioe.resource.transaction
 
-object Dispatcher {
+import org.bluebikebase.ioe.resource.vessel.lifecycle.ShipLifecycle
 
+interface Dispatcher {
+    suspend fun dispatch(transaction: ShipTransaction): Result<ShipLifecycle>
 }
