@@ -31,6 +31,8 @@ class Fleet<T, R> internal constructor(
         dispose(container.resource)
     }
 
+    internal fun replicate(): Ship<T, R> = Fleet(container, cleanup, dispose)
+
     private var userJob: Job? = null
     private val boardingOrder = Mutex()
 }

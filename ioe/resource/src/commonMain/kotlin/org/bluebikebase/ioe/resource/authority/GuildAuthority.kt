@@ -17,30 +17,14 @@ class GuildAuthority<T, R> private constructor(
     private val berths: MutableMap<Identity, Berth<T, R>>,
     private val dispatcher: Dispatcher = Dispatcher,
 ) : Reception<T, R> {
-    override suspend fun welcomeTo(destinationId: Identity): Ship<T, R> = berths[destinationId]?.invite()
-         ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
+    override suspend fun welcomeTo(destinationId: Identity): Ship<T, R> =
+        berths[destinationId]?.run {
+            val recipe = registry.recipes.getValue(destinationId)
+            val cleanup = registry.cleanups.getValue(destinationId)
+            val dispose = registry.disposes.getValue(destinationId)
 
-    /*
-        context.managers[destinationId]?.let { manager -> if (manager !is Ghost) return manager }
-            ?: throw B3IoeIllegalResourceException("Resource not yet registered: $destinationId")
-
-        return dockOrder.withLock {
-            val recipe = context.recipes.getValue(destinationId)
-            val cleanup = context.cleanups.getValue(destinationId)
-            val dispose = context.disposes.getValue(destinationId)
-            val container = Container(recipe())
-
-            val manager = if (context.withSingle.getValue(destinationId))
-                LoneWolf<T, R>(container, cleanup, dispose) as Ship<T, R>
-            else
-                Fleet<T, R>(container, cleanup, dispose) as Ship<T, R>
-
-            manager.also {
-                context.managers.remove(destinationId)
-                context.managers[destinationId] = it
-            }
-        }
-        */
+            invite(recipe, cleanup, dispose)
+        } ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
 
     internal suspend fun prepare(destinationId: Identity): Ship<T, R> = welcomeTo(destinationId)
 
