@@ -5,7 +5,7 @@ import org.bluebikebase.core.foundation.ScalarL
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class GuildAuthority<T, R> private constructor(
-    private val context: ShipContext<T, R>,
+    private val registry: Registry<T, R>,
     private val berths: MutableMap<Identity, Berth<T, R>>,
     private val dispatcher: Dispatcher = Dispatcher,
 ) : Reception<T, R> {
@@ -51,7 +51,7 @@ class GuildAuthority<T, R> private constructor(
             guild.apply {
                 val destinationId = Identity.fromString(strUuid)
 
-                context.run {
+                registry.run {
                     withSingle[destinationId] = isSingle
                     recipes[destinationId] = Recipe(recipe)
                     cleanups[destinationId] = Cleanup(cleanup)
@@ -70,7 +70,7 @@ class GuildAuthority<T, R> private constructor(
         }
 
         private val guild: GuildAuthority<T, R> = GuildAuthority(
-            context = ShipContext(
+            registry = Registry(
                 withSingle = mutableMapOf(),
                 recipes = mutableMapOf(),
                 cleanups = mutableMapOf(),
