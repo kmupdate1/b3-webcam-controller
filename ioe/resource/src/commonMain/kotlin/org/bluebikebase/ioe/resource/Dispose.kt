@@ -1,4 +1,3 @@
 package org.bluebikebase.ioe.resource
 
-@ConsistentCopyVisibility
-data class Dispose<T> internal constructor(val function: suspend (T) -> Unit)
+internal fun interface Dispose<T> { suspend operator fun invoke(resource: T) }

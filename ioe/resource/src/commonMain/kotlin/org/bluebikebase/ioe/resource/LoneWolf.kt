@@ -10,16 +10,27 @@ class LoneWolf<T, R> internal constructor(
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
 ) : ResourceManager<T, R> {
-    override suspend fun drive(block: suspend (T) -> R): R = mutex.withLock {
+    override suspend fun drive(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
+
         try { block.invoke(container.resource) }
-        finally { cleanup.function(container.resource); userJob = null }
+        finally { cleanup(container.resource); userJob = null }
     }
 
-    internal suspend fun suspend() =
+    override suspend fun reject() = boardingOrder.withLock {
         try { userJob?.cancel() ?: throw B3IoeIllegalResourceException(message = "NaN job") }
-        finally { dispose.function(container.resource) }
+        finally { cleanup(container.resource); userJob = null }
+    }
+
+    override suspend fun suspended() = boardingOrder.withLock {
+        cleanup(container.resource); userJob = null
+    }
+
+    internal suspend fun delete() = boardingOrder.withLock {
+        if (userJob != null) Unit
+        dispose(container.resource)
+    }
 
     private var userJob: Job? = null
-    private val mutex = Mutex()
+    private val boardingOrder = Mutex()
 }

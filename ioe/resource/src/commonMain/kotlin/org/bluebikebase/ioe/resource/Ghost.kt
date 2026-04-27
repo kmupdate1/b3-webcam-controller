@@ -1,7 +1,17 @@
 package org.bluebikebase.ioe.resource
 
-object Ghost : ResourceManager<Nothing, Unit> {
+import org.bluebikebase.core.foundation.Identity
+
+data class Ghost(val resourceId: Identity) : ResourceManager<Nothing, Unit> {
     override suspend fun drive(block: suspend (Nothing) -> Unit) =
         println("Captain: Welcome to The Flying Dutchman |~.~| " +
                 "To vanish into the sea, becoming flotsam and jetsam...")
+
+    override suspend fun reject() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun suspended() {
+        TODO("Not yet implemented")
+    }
 }
