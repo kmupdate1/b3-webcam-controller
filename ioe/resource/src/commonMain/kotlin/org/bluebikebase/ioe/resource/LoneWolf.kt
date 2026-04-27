@@ -22,11 +22,7 @@ class LoneWolf<T, R> internal constructor(
         finally { cleanup(container.resource); userJob = null }
     }
 
-    override suspend fun suspended() = boardingOrder.withLock {
-        cleanup(container.resource); userJob = null
-    }
-
-    internal suspend fun delete() = boardingOrder.withLock {
+    internal suspend fun dispose() = boardingOrder.withLock {
         if (userJob != null) Unit
         dispose(container.resource)
     }

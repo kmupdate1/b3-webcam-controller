@@ -10,8 +10,4 @@ data class Ghost(val resourceId: Identity) : ResourceManager<Nothing, Unit> {
     override suspend fun reject() {
         TODO("Not yet implemented")
     }
-
-    override suspend fun suspended() {
-        TODO("Not yet implemented")
-    }
 }

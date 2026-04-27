@@ -6,30 +6,26 @@ import org.bluebikebase.core.foundation.Identity
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class ResourceGuild<T, R> private constructor(
-    private val withSingle: MutableMap<Identity, Boolean>,
-    private val recipes: MutableMap<Identity, Recipe<T>>,
-    private val cleanups: MutableMap<Identity, Cleanup<T>>,
-    private val disposes: MutableMap<Identity, Dispose<T>>,
-    private val managers: MutableMap<Identity, ResourceManager<T, R>>,
+    private val context: ResourceContext<T, R>,
 ) : Reception<T, R> {
     override suspend fun inviteTo(resourceId: Identity): ResourceManager<T, R> {
-        managers[resourceId]?.let { manager -> if (manager !is Ghost) return manager }
+        context.managers[resourceId]?.let { manager -> if (manager !is Ghost) return manager }
             ?: throw B3IoeIllegalResourceException("Resource not yet registered: $resourceId")
 
         return dockOrder.withLock {
-            val recipe = recipes.getValue(resourceId)
-            val cleanup = cleanups.getValue(resourceId)
-            val dispose = disposes.getValue(resourceId)
+            val recipe = context.recipes.getValue(resourceId)
+            val cleanup = context.cleanups.getValue(resourceId)
+            val dispose = context.disposes.getValue(resourceId)
             val container = ResourceContainer(recipe())
 
-            val manager = if (withSingle.getValue(resourceId))
+            val manager = if (context.withSingle.getValue(resourceId))
                 LoneWolf<T, R>(container, cleanup, dispose) as ResourceManager<T, R>
             else
                 Fleet<T, R>(container, cleanup, dispose) as ResourceManager<T, R>
 
             manager.also {
-                managers.remove(resourceId)
-                managers[resourceId] = it
+                context.managers.remove(resourceId)
+                context.managers[resourceId] = it
             }
         }
     }
@@ -43,11 +39,13 @@ class ResourceGuild<T, R> private constructor(
      */
     class Builder<T, R> private constructor() {
         private val guild: ResourceGuild<T, R> = ResourceGuild(
-            withSingle = mutableMapOf(),
-            recipes = mutableMapOf(),
-            cleanups = mutableMapOf(),
-            disposes = mutableMapOf(),
-            managers = mutableMapOf(),
+            context = ResourceContext(
+                withSingle = mutableMapOf(),
+                recipes = mutableMapOf(),
+                cleanups = mutableMapOf(),
+                disposes = mutableMapOf(),
+                managers = mutableMapOf(),
+            )
         )
 
         fun register(
@@ -56,7 +54,7 @@ class ResourceGuild<T, R> private constructor(
             clean: suspend (T) -> Unit,
             delete: suspend (T) -> Unit,
         ): Builder<T, R> {
-            guild.apply {
+            guild.context.apply {
                 val resourceId = Identity.fromString(strUuid)
 
                 withSingle[resourceId] = isSingle
