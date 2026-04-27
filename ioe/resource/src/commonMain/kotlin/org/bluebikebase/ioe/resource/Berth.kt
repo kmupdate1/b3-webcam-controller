@@ -6,7 +6,7 @@ internal class Berth<T, R>(
     private val capacity: ShipCapacity,
     private val ships: MutableSet<Ship<T, R>>,
 ) {
-    suspend fun welcome(): Ship<T, R> { TODO() }
+    suspend fun invite(): Ship<T, R> { TODO() }
 
     private val berthOrder = Mutex()
 }

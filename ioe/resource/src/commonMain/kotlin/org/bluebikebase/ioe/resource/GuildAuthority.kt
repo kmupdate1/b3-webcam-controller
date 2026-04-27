@@ -9,7 +9,7 @@ class GuildAuthority<T, R> private constructor(
     private val berths: MutableMap<Identity, Berth<T, R>>,
     private val dispatcher: Dispatcher = Dispatcher,
 ) : Reception<T, R> {
-    override suspend fun inviteTo(destinationId: Identity): Ship<T, R> = berths[destinationId]?.welcome()
+    override suspend fun welcomeTo(destinationId: Identity): Ship<T, R> = berths[destinationId]?.invite()
          ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
 
     /*
@@ -34,7 +34,7 @@ class GuildAuthority<T, R> private constructor(
         }
         */
 
-    internal suspend fun prepare(destinationId: Identity): Ship<T, R> = inviteTo(destinationId)
+    internal suspend fun prepare(destinationId: Identity): Ship<T, R> = welcomeTo(destinationId)
 
     /**
      * ギルド（シングルトンを想定）を開店するための足掛かり
