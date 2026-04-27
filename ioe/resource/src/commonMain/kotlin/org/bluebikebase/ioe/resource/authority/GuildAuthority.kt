@@ -3,15 +3,14 @@ package org.bluebikebase.ioe.resource.authority
 import org.bluebikebase.core.foundation.Identity
 import org.bluebikebase.core.foundation.ScalarL
 import org.bluebikebase.ioe.resource.berth.Berth
-import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
-import org.bluebikebase.ioe.resource.transaction.Dispatcher
-import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
-import org.bluebikebase.ioe.resource.vessel.Ghost
-import org.bluebikebase.ioe.resource.vessel.lifecycle.Recipe
-import org.bluebikebase.ioe.resource.vessel.Ship
 import org.bluebikebase.ioe.resource.berth.ShipCapacity
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
-import kotlin.collections.set
+import org.bluebikebase.ioe.resource.transaction.Dispatcher
+import org.bluebikebase.ioe.resource.vessel.Ghost
+import org.bluebikebase.ioe.resource.vessel.Ship
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Recipe
 
 class GuildAuthority<T, R> private constructor(
     private val registry: Registry<T, R>,

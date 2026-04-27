@@ -7,7 +7,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
-import org.bluebikebase.ioe.resource.berth.Container
+import org.bluebikebase.ioe.resource.foundation.Container
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class Fleet<T, R> internal constructor(
