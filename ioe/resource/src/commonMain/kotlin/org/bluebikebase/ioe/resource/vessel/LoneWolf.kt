@@ -1,8 +1,11 @@
-package org.bluebikebase.ioe.resource
+package org.bluebikebase.ioe.resource.vessel
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
+import org.bluebikebase.ioe.resource.berth.Container
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class LoneWolf<T, R> internal constructor(

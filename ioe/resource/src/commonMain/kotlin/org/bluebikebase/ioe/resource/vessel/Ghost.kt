@@ -1,4 +1,4 @@
-package org.bluebikebase.ioe.resource
+package org.bluebikebase.ioe.resource.vessel
 
 import org.bluebikebase.core.foundation.Identity
 

@@ -1,4 +1,4 @@
-package org.bluebikebase.ioe.resource
+package org.bluebikebase.ioe.resource.berth
 
 import org.bluebikebase.core.foundation.ScalarL
 
