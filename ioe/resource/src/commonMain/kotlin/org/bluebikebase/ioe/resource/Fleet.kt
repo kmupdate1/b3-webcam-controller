@@ -8,10 +8,10 @@ import kotlinx.coroutines.sync.withLock
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class Fleet<T, R> internal constructor(
-    private val container: ResourceContainer<T>,
+    private val container: Container<T>,
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
-) : ResourceManager<T, R> {
+) : Ship<T, R> {
     override suspend fun drive(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
         try { block.invoke(container.resource) }
