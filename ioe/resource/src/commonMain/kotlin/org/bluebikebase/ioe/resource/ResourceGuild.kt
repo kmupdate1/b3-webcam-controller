@@ -3,31 +3,31 @@ package org.bluebikebase.ioe.resource
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.bluebikebase.core.foundation.Identity
-import org.bluebikebase.ioe.resource.error.B3IoeResourceNotFoundException
 
 class ResourceGuild<T, R> private constructor(
     private val withSingle: MutableMap<Identity, Boolean>,
-    private val recipes: MutableMap<Identity, suspend () -> T>,
-    private val disposes: MutableMap<Identity, suspend () -> Unit>,
+    private val recipes: MutableMap<Identity, Recipe<T>>,
+    private val cleanups: MutableMap<Identity, Cleanup<T>>,
+    private val disposes: MutableMap<Identity, Dispose<T>>,
     private val managers: MutableMap<Identity, ResourceManager<T, R>>,
 ) : Reception<T, R> {
     override suspend fun inviteTo(resourceId: Identity): ResourceManager<T, R> = managers[resourceId] ?: Mutex().run {
         withLock {
-            val resource = recipes.getValue(resourceId).invoke()
+            val resource = recipes.getValue(resourceId).function.invoke()
+            val cleanup = cleanups.getValue(resourceId)
             val dispose = disposes.getValue(resourceId)
             val container = ResourceContainer(resource)
 
-            if (withSingle.getValue(resourceId))
-                LoneWolf<T, R>(container = container, emergency = dispose) as ResourceManager<T, R>
+            val manager = if (withSingle.getValue(resourceId))
+                LoneWolf<T, R>(container, cleanup, dispose) as ResourceManager<T, R>
             else
-                Fleet<T, R>(container = container, emergency = dispose) as ResourceManager<T, R>
+                Fleet<T, R>(container, cleanup, dispose) as ResourceManager<T, R>
+
+            manager.also { managers[resourceId] = it }
         }
     }
 
-    internal suspend fun prepare(resourceId: Identity): T = recipes[resourceId]?.invoke()
-        ?: throw B3IoeResourceNotFoundException()
-    internal suspend fun dispose(resourceId: Identity) = disposes[resourceId]?.invoke()
-        ?: throw B3IoeResourceNotFoundException()
+    internal suspend fun prepare(resourceId: Identity): ResourceManager<T, R> = inviteTo(resourceId)
 
     /**
      * ギルド（シングルトンを想定）を開店するための足掛かり
@@ -36,21 +36,24 @@ class ResourceGuild<T, R> private constructor(
         private val guild: ResourceGuild<T, R> = ResourceGuild(
             withSingle = mutableMapOf(),
             recipes = mutableMapOf(),
+            cleanups = mutableMapOf(),
             disposes = mutableMapOf(),
             managers = mutableMapOf(),
         )
 
-        fun set(
+        fun register(
             strUuid: String, isSingle: Boolean = false,
             recipe: suspend () -> T,
-            dispose: suspend () -> Unit,
+            cleanup: suspend (T) -> Unit,
+            dispose: suspend (T) -> Unit,
         ): Builder<T, R> {
             guild.apply {
                 val resourceId = Identity.fromString(strUuid)
 
                 withSingle[resourceId] = isSingle
-                recipes[resourceId] = recipe
-                disposes[resourceId] = dispose
+                recipes[resourceId] = Recipe(recipe)
+                cleanups[resourceId] = Cleanup(cleanup)
+                disposes[resourceId] = Dispose(dispose)
                 managers[resourceId] = boardOnTheFlyingDutchman()
             }
 

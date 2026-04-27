@@ -7,17 +7,18 @@ import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
 class LoneWolf<T, R> internal constructor(
     private val container: ResourceContainer<T>,
-    private val emergency: suspend () -> Unit,
+    private val cleanup: Cleanup<T>,
+    private val dispose: Dispose<T>,
 ) : ResourceManager<T, R> {
-    override suspend fun use(block: suspend (T) -> R): R = mutex.withLock {
+    override suspend fun drive(block: suspend (T) -> R): R = mutex.withLock {
         userJob = currentCoroutineContext().job
         try { block.invoke(container.resource) }
-        finally { userJob = null }
+        finally { cleanup.function(container.resource); userJob = null }
     }
 
-    override suspend fun suspend() =
+    internal suspend fun suspend() =
         try { userJob?.cancel() ?: throw B3IoeIllegalResourceException(message = "NaN job") }
-        finally { emergency.invoke() }
+        finally { dispose.function(container.resource) }
 
     private var userJob: Job? = null
     private val mutex = Mutex()

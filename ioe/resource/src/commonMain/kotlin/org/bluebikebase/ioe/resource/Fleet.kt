@@ -4,13 +4,10 @@ import kotlinx.coroutines.Job
 
 class Fleet<T, R> internal constructor(
     private val container: ResourceContainer<T>,
-    private val emergency: suspend () -> Unit,
+    private val cleanup: Cleanup<T>,
+    private val dispose: Dispose<T>,
 ) : ResourceManager<T, R> {
-    override suspend fun use(block: suspend (T) -> R): R {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun suspend() {
+    override suspend fun drive(block: suspend (T) -> R): R {
         TODO("Not yet implemented")
     }
 
