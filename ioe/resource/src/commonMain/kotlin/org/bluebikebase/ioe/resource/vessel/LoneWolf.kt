@@ -13,7 +13,7 @@ class LoneWolf<T, R> internal constructor(
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
 ) : Ship<T, R> {
-    override suspend fun drive(block: suspend (T) -> R): R = boardingOrder.withLock {
+    override suspend fun operate(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
 
         try { block.invoke(container.resource) }

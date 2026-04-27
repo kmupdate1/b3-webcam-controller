@@ -15,7 +15,7 @@ class Fleet<T, R> internal constructor(
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
 ) : Ship<T, R> {
-    override suspend fun drive(block: suspend (T) -> R): R = boardingOrder.withLock {
+    override suspend fun operate(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
         try { block.invoke(container.resource) }
         finally { cleanup(container.resource); userJob = null }
@@ -26,12 +26,12 @@ class Fleet<T, R> internal constructor(
         finally { cleanup(container.resource); userJob = null }
     }
 
+    internal fun replicate(): Ship<T, R> = this
+
     internal suspend fun dispose() = boardingOrder.withLock {
         if (userJob != null) Unit
         dispose(container.resource)
     }
-
-    internal fun replicate(): Ship<T, R> = Fleet(container, cleanup, dispose)
 
     private var userJob: Job? = null
     private val boardingOrder = Mutex()
