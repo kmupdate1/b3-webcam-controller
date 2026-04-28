@@ -1,7 +1,3 @@
 package org.bluebikebase.ioe.resource.transaction
 
-import org.bluebikebase.ioe.resource.vessel.lifecycle.ShipLifecycle
-
-interface ShipTransaction {
-    suspend fun execute(): Result<ShipLifecycle>
-}
+fun interface ShipTransaction<R> { suspend fun execute(): Result<R> }

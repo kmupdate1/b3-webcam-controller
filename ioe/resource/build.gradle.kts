@@ -14,6 +14,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
+            implementation(libs.bluebikebase.core)
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
         }
