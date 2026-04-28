@@ -17,6 +17,7 @@ internal class Fleet<T, R> internal constructor(
 ) : Ship<T, R>, Replicable<T, R> {
     override suspend fun operate(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
+
         try { block.invoke(container.resource) }
         finally { cleanup(container.resource); userJob = null }
     }
