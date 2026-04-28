@@ -14,8 +14,13 @@ class HarborAuthority<T, R> internal constructor(
     internal val berths: MutableMap<Identity, Berth<T, R>>,
 ) : Reception<T, R>, Dispatcher<R> {
     override suspend fun welcomeTo(destinationId: Identity): Ship<T, R> =
-        berths[destinationId]?.run { invite() }
-            ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
+        berths[destinationId]?.run {
+            val establish = registry.establishes.getValue(destinationId)
+            val cleanup = registry.cleanups.getValue(destinationId)
+            val dispose = registry.disposes.getValue(destinationId)
+
+            invite(establish, cleanup, dispose)
+        } ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
 
     override suspend fun dispatch(transaction: ShipTransaction<R>): Result<R> =
         withContext(coroutineContext) {
