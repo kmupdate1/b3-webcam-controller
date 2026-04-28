@@ -8,11 +8,11 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.foundation.Container
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
-class LoneWolf<T, R> internal constructor(
+internal class LoneWolf<T, R> internal constructor(
     private val container: Container<T>,
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
-) : Ship<T, R> {
+) : Ship<T, R>, Replicable<T, R> {
     override suspend fun operate(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
 
@@ -24,6 +24,8 @@ class LoneWolf<T, R> internal constructor(
         try { userJob?.cancel() ?: throw B3IoeIllegalResourceException(message = "NaN job") }
         finally { cleanup(container.resource); userJob = null }
     }
+
+    override fun replicate(): Ship<T, R> = this
 
     internal suspend fun dispose() = boardingOrder.withLock {
         if (userJob != null) Unit

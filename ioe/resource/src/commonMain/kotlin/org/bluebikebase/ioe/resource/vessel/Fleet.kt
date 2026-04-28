@@ -10,11 +10,11 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.foundation.Container
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
-class Fleet<T, R> internal constructor(
+internal class Fleet<T, R> internal constructor(
     private val container: Container<T>,
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
-) : Ship<T, R> {
+) : Ship<T, R>, Replicable<T, R> {
     override suspend fun operate(block: suspend (T) -> R): R = boardingOrder.withLock {
         userJob = currentCoroutineContext().job
         try { block.invoke(container.resource) }
@@ -26,7 +26,7 @@ class Fleet<T, R> internal constructor(
         finally { cleanup(container.resource); userJob = null }
     }
 
-    internal fun replicate(): Ship<T, R> = Fleet(container, cleanup, dispose)
+    override fun replicate(): Ship<T, R> = Fleet(container, cleanup, dispose)
 
     internal suspend fun dispose() = boardingOrder.withLock {
         if (userJob != null) Unit
