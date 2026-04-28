@@ -26,7 +26,7 @@ class Fleet<T, R> internal constructor(
         finally { cleanup(container.resource); userJob = null }
     }
 
-    internal fun replicate(): Ship<T, R> = this
+    internal fun replicate(): Ship<T, R> = Fleet(container, cleanup, dispose)
 
     internal suspend fun dispose() = boardingOrder.withLock {
         if (userJob != null) Unit

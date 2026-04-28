@@ -120,7 +120,7 @@ class HarborLogicTest {
     private val authority = AuthorityBuilder<VirtualSoySensor, ScalarL>()
         .register(
             strUuid = uuid.toString(),
-            isSingle = true,
+            // isSingle = true,
             establish = {
                 println("--- Sensor establishing... ---")
                 VirtualSoySensor()
