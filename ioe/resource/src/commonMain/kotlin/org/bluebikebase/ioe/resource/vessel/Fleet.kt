@@ -10,7 +10,7 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.foundation.Container
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 
-internal class Fleet<T, R> internal constructor(
+internal class Fleet<T, R>(
     private val container: Container<T>,
     private val cleanup: Cleanup<T>,
     private val dispose: Dispose<T>,
