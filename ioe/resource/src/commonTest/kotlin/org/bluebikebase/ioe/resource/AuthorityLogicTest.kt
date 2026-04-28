@@ -20,7 +20,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class HarborLogicTest {
+class AuthorityLogicTest {
     @Test
     fun `harbor logic test`() = runTest {
         val shipA = withContext(currentCoroutineContext()) { authority.welcomeTo(Identity.fromString(uuid1.toString())) }

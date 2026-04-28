@@ -12,7 +12,7 @@ import org.bluebikebase.ioe.resource.vessel.Ship
 internal class HarborAuthority<T, R>(
     internal val registry: Registry<T, R>,
     internal val berths: MutableMap<Identity, Berth<T, R>>,
-) : Harbor<T, R> {
+) : Authority<T, R> {
     override suspend fun welcomeTo(destinationId: Identity): Ship<T, R> =
         berths[destinationId]?.run {
             val establish = registry.establishes.getValue(destinationId)
