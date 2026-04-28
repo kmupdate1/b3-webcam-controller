@@ -37,7 +37,7 @@ class AuthorityBuilder<T, R> {
         return this
     }
 
-    fun build(): HarborAuthority<T, R> = authority
+    fun build(): Harbor<T, R> = authority
 
     private val authority: HarborAuthority<T, R> = HarborAuthority(
         registry = Registry(

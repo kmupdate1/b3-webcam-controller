@@ -143,8 +143,9 @@ class HarborLogicTest {
         // 3. 全ての結果が成功しており、順序が守られていたか確認
         results.forEachIndexed { index, result ->
             println("Result ${index + 1}: ${result.getOrNull()}")
-            // assert(result.isSuccess)
         }
+
+
 
         println("--- End: Concurrent Voyage Test ---")
     }
