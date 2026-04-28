@@ -26,8 +26,15 @@ internal class Berth<T, R>(
                 else -> {
                     val resource = establish.invoke()
 
-                    if (capacity.size == ScalarL.ONE) LoneWolf(Container(resource), cleanup, dispose)
-                    else Fleet(Container(resource), cleanup, dispose)
+                    val newVessel = if (capacity.size == ScalarL.ONE)
+                        LoneWolf<T, R>(Container(resource), cleanup, dispose) as Ship<T, R>
+                    else
+                        Fleet<T, R>(Container(resource), cleanup, dispose) as Ship<T, R>
+
+                    newVessel.also {
+                        ships.clear()
+                        ships.add(it)
+                    }
                 }
             }
         }
