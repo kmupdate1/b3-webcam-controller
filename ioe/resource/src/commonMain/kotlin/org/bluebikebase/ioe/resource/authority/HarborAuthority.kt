@@ -1,5 +1,6 @@
 package org.bluebikebase.ioe.resource.authority
 
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 import org.bluebikebase.core.foundation.Identity
 import org.bluebikebase.ioe.resource.berth.Berth
@@ -7,7 +8,6 @@ import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 import org.bluebikebase.ioe.resource.transaction.Dispatcher
 import org.bluebikebase.ioe.resource.transaction.ShipTransaction
 import org.bluebikebase.ioe.resource.vessel.Ship
-import kotlin.coroutines.coroutineContext
 
 class HarborAuthority<T, R> internal constructor(
     internal val registry: Registry<T, R>,
@@ -23,7 +23,7 @@ class HarborAuthority<T, R> internal constructor(
         } ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
 
     override suspend fun dispatch(transaction: ShipTransaction<R>): Result<R> =
-        withContext(coroutineContext) {
+        withContext(currentCoroutineContext()) {
             try { transaction.execute() }
             catch (e: Throwable) { Result.failure(e) }
         }

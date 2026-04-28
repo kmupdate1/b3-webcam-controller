@@ -25,12 +25,12 @@ internal class LoneWolf<T, R>(
         finally { cleanup(container.resource); userJob = null }
     }
 
-    override fun replicate(): Ship<T, R> = this
-
-    internal suspend fun dispose() = boardingOrder.withLock {
+    override suspend fun terminate() = boardingOrder.withLock {
         if (userJob != null) Unit
         dispose(container.resource)
     }
+
+    override fun replicate(): Ship<T, R> = this
 
     private var userJob: Job? = null
     private val boardingOrder = Mutex()
