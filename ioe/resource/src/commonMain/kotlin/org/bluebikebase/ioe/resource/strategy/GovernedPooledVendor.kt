@@ -9,9 +9,9 @@ class GovernedPooledVendor<T, R>(
     override val fleets: MutableSet<Fleet<T, R>> = mutableSetOf(),
 ) : FleetShipVendor<T, R> {
     override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> {
-        val masterFleet = fleets.firstOrNull()
+        val masterFleet = fleets.also { println("GOVERNED: ${it.size}隻") }.firstOrNull()
 
-        return masterFleet?.replicate() ?: Fleet<T, R>(container, cleanup, dispose)
-            .also { fleets.add(it) }
+        return masterFleet?.replicate()?.also { fleets.add(it) }
+            ?: Fleet<T, R>(container, cleanup, dispose).also { fleets.add(it) }
     }
 }

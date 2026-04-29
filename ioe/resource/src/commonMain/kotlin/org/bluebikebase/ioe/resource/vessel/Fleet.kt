@@ -40,7 +40,7 @@ class Fleet<T, R>(
         dispose(container.resource)
     }
 
-    override fun replicate(): Fleet<T, R> = Fleet(container, cleanup, dispose)
+    override fun replicate(): Fleet<T, R> = Fleet(container.copy(), cleanup, dispose)
 
     private var userJob: Job? = null
     private val boardingOrder = Mutex()

@@ -22,7 +22,7 @@ class AuthorityLogicTest {
     @Test
     fun `random access logic test`() = runBlocking {
         println()
-        val jobs = (1..200).map { i ->
+        val jobs = SAILOR.map { i ->
             async {
                 // 1. バラバラのタイミングで現れるゲスト
                 delay(Random.nextLong(500, 5_000).milliseconds)
@@ -140,5 +140,6 @@ class AuthorityLogicTest {
 
     companion object {
         val SECOND = 1_000.milliseconds
+        val SAILOR = 1..20_000
     }
 }

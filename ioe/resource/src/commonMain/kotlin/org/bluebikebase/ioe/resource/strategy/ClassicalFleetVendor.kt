@@ -11,12 +11,12 @@ class ClassicalFleetVendor<T, R>(
     private val scaleLimit: ScalarL = ScalarL.of(10L)
 ) : FleetShipVendor<T, R> {
     override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> {
-        val masterFleet = fleets.firstOrNull()
+        val masterFleet = fleets.also { println("CLASSICAL: ${it.size}隻") }.firstOrNull()
 
         return masterFleet?.let {
             if (fleets.size < scaleLimit.value) it.replicate()
             else it
-
-        } ?: Fleet<T, R>(container, cleanup, dispose).also { fleets.add(it) }
+        }?.also { fleets.add(it) }
+            ?: Fleet<T, R>(container, cleanup, dispose).also { fleets.add(it) }
     }
 }
