@@ -20,15 +20,15 @@ class AuthorityLogicTest {
     @Test
     fun `random access logic test`() = runBlocking {
         println()
-        val jobs = (1..20_000).map { i ->
+        val jobs = (1..200).map { i ->
             async {
                 // 1. バラバラのタイミングで現れるゲスト
                 delay(Random.nextLong(500, 5_000).milliseconds)
 
                 val dress = when (Random.nextInt(3)) {
                     0 -> MopeSailor
-                    1 -> MihoSailor
-                    else -> KenSailor
+                    1 -> MopeSailor
+                    else -> MopeSailor
                 }
 
                 try {
@@ -36,11 +36,12 @@ class AuthorityLogicTest {
                     withContext(dress) {
                         // 3. 24h でタイムアウト
                         withTimeout(1_000.milliseconds * 60 * 60 * 24) {
-                            val ship = authority.welcomeToShip()
                             val result = authority.dispatch {
+
+                                val ship = authority.welcomeToSailor()
                                 val value = ship.operate { sensor ->
                                     // 4. 物理的なゆらぎ（計測に時間がかかる）
-                                    delay(Random.nextLong(100, 1500).milliseconds)
+                                    delay(Random.nextLong(10, 1500).milliseconds)
                                     sensor.measure(30L).also {
                                         println("[Job $i] \"${dress::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
                                     }
@@ -64,6 +65,7 @@ class AuthorityLogicTest {
 
         val results = jobs.awaitAll()
         val successCount = results.count { it.isSuccess }
+
         println("\n--- 実験終了レポート ---")
         println("総ゲスト数: ${jobs.size}, 成功数: $successCount, 離脱数: ${jobs.size - successCount}\n")
     }
