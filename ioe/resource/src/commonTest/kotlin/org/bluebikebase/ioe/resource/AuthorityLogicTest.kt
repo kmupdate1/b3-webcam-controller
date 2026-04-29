@@ -81,9 +81,9 @@ class AuthorityLogicTest {
 
                     else -> try {
                         withContext(KenSailor) {
-                            withTimeout(minute / 2) {
+                            withTimeout(minute / 20) {
                                 authority.dispatch {
-                                    val ship = authority.welcomeToPirate()
+                                    val ship = authority.welcomeToSailor()
                                     val value = ship.operate { sensor ->
                                         delay(Random.nextLong(10, 1500).milliseconds)
 

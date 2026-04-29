@@ -7,7 +7,6 @@ import org.bluebikebase.ioe.resource.berth.FleetBerth
 import org.bluebikebase.ioe.resource.berth.LoneWolfBerth
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 import org.bluebikebase.ioe.resource.strategy.ClassicalFleetVendor
-import org.bluebikebase.ioe.resource.strategy.ClassicalLoneWolfVendor
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
@@ -36,10 +35,7 @@ class AuthorityApplicable<T, R> {
                          vendor = ClassicalFleetVendor(mutableSetOf()),
                      )
 
-                 DressType.PIRATES ->
-                     lwBerths[destinationId] = LoneWolfBerth(
-                         vendor = ClassicalLoneWolfVendor(mutableSetOf()),
-                     )
+                 DressType.PIRATES -> lwBerths[destinationId] = LoneWolfBerth()
              }
          }
 
