@@ -121,6 +121,7 @@ class AuthorityLogicTest {
             establish = { NormalSoySensor().also { println("⚓️ Mope: Normal Sensor Ready.") } },
             cleanup = { println("--- Sensor[NORMAL] terminating... ---") },
             dispose = { println("---  Sensor[NORMAL] powered off   ---") },
+            vendor = TODO("Vendor")
         )
         .reserve<MihoPirate>(
             establish = { HyperSoySensor().also { println("🏴‍☠️ Miho: Hyper Sensor Active!") } },
@@ -131,6 +132,7 @@ class AuthorityLogicTest {
             establish = { RandomSoySensor().also { println("🛳️ Ken: Random Fleet Sensor Deployed.") } },
             cleanup = { println("--- Sensor[RANDOM] terminating... ---") },
             dispose = { println("---  Sensor[RANDOM] powered off   ---") },
+            vendor = TODO("Vendor")
         )
         .applicate()
 

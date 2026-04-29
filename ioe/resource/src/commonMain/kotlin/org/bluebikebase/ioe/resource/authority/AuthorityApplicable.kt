@@ -1,18 +1,18 @@
 package org.bluebikebase.ioe.resource.authority
 
 import org.bluebikebase.core.identity.B3Hash
-import org.bluebikebase.ioe.resource.authority.context.VesselDress
+import org.bluebikebase.ioe.resource.authority.context.VesselPirateDress
+import org.bluebikebase.ioe.resource.authority.context.VesselSailorDress
 import org.bluebikebase.ioe.resource.berth.FleetBerth
 import org.bluebikebase.ioe.resource.berth.LoneWolfBerth
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
-import org.bluebikebase.ioe.resource.strategy.ClassicalFleetVendor
 import org.bluebikebase.ioe.resource.strategy.FleetShipVendor
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
 
 class AuthorityApplicable<T, R> {
-    inline fun <reified D : VesselDress> reserve(
+    inline fun <reified D : VesselPirateDress> reserve(
         noinline establish: suspend () -> T,
         noinline cleanup: suspend (T) -> Unit,
         noinline dispose: suspend (T) -> Unit,
@@ -33,7 +33,7 @@ class AuthorityApplicable<T, R> {
         return this
     }
 
-    inline fun <reified D : VesselDress> reserve(
+    inline fun <reified D : VesselSailorDress> reserve(
         noinline establish: suspend () -> T,
         noinline cleanup: suspend (T) -> Unit,
         noinline dispose: suspend (T) -> Unit,
