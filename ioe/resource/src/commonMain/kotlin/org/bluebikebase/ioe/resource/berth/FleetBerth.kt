@@ -12,8 +12,8 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
 
 @PublishedApi
 internal class FleetBerth<T, R>(
-    val scaleSize: ShipScaleSize = ShipScaleSize(ScalarL.of(10L)),
-    val vendor: FleetShipVendor<T, R>,
+    private val scaleSize: ShipScaleSize = ShipScaleSize(ScalarL.of(100L)),
+    private val vendor: FleetShipVendor<T, R>,
 ) {
     suspend fun invite(establish: Establish<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> =
         berthOrder.withPermit {
