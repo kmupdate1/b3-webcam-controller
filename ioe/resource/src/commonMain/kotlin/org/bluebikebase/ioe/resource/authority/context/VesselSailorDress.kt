@@ -6,9 +6,7 @@ import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.reflect.KClass
 
-abstract class VesselSailorDress(
-    override val dressType: DressType = DressType.SAILOR,
-) : AbstractCoroutineContextElement(VesselDress.Key), VesselDress {
+abstract class VesselSailorDress : AbstractCoroutineContextElement(VesselDress.Key), VesselDress {
     companion object {
         fun createIdFromKlass(klass: KClass<out VesselSailorDress>): UniqueID {
             val name = klass.qualifiedName
