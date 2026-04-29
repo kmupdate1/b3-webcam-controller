@@ -33,18 +33,13 @@ class AuthorityApplicable<T, R> {
              }
 
              when (kDress) {
-                 is VesselSailorDress -> {
-                     fleetBerths[destinationId] = FleetBerth(
-                         scaleSize = ShipScaleSize(ScalarL.of(10L)),
-                         fleets = mutableSetOf()
-                     )
-                 }
+                 is VesselSailorDress ->
+                     fleetBerths[destinationId] =
+                         FleetBerth(fleets = mutableSetOf())
 
-                 is VesselPirateDress -> {
-                     lwBerths[destinationId] = LoneWolfBerth(
-                         wolves = mutableSetOf(),
-                     )
-                 }
+                 is VesselPirateDress ->
+                     lwBerths[destinationId] =
+                         LoneWolfBerth(wolves = mutableSetOf())
              }
          }
 
