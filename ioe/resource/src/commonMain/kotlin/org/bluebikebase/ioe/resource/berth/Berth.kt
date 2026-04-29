@@ -11,8 +11,9 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
 
+@PublishedApi
 internal class Berth<T, R>(
-    private val capacity: ShipCapacity,
+    private val scaleSize: ShipScaleSize,
     private val ships: MutableSet<Ship<T, R>>,
 ) {
     suspend fun invite(establish: Establish<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Ship<T, R> =
@@ -20,13 +21,13 @@ internal class Berth<T, R>(
             when (val masterShip = ships.first()) {
                 is LoneWolf -> masterShip
                 is Fleet ->
-                    if (ships.size < capacity.size.value) masterShip.replicate().also { ships.add(it) }
+                    if (ships.size < scaleSize.limit.value) masterShip.replicate().also { ships.add(it) }
                     else ships.last()
 
                 else -> {
                     val resource = establish.invoke()
 
-                    val newVessel = if (capacity.size == ScalarL.ONE)
+                    val newVessel = if (scaleSize.limit == ScalarL.ONE)
                         LoneWolf<T, R>(Container(resource), cleanup, dispose) as Ship<T, R>
                     else
                         Fleet<T, R>(Container(resource), cleanup, dispose) as Ship<T, R>
@@ -38,6 +39,10 @@ internal class Berth<T, R>(
                 }
             }
         }
+
+    suspend fun terminate() {
+
+    }
 
     private val berthOrder = Mutex()
 }

@@ -28,7 +28,9 @@ internal class Fleet<T, R>(
     }
 
     override suspend fun terminate() = boardingOrder.withLock {
-        if (userJob != null) Unit
+        if (userJob != null)
+            throw B3IoeIllegalResourceException(message = "Cannot terminate while a guest is still on board")
+
         dispose(container.resource)
     }
 

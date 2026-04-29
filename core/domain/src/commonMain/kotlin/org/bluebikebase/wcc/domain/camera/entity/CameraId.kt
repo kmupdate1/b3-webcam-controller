@@ -1,10 +1,11 @@
 package org.bluebikebase.wcc.domain.camera.entity
 
-import org.bluebikebase.core.foundation.Identity
+import org.bluebikebase.core.identity.B3Uuid
+import org.bluebikebase.core.identity.UniqueID
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class CameraId private constructor(val id: Identity = Identity.gen()) {
+value class CameraId private constructor(val id: UniqueID = B3Uuid.gen()) {
     companion object {
         fun generate(): CameraId = CameraId()
     }

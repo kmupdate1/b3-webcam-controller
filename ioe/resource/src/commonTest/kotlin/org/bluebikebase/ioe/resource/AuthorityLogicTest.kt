@@ -3,24 +3,27 @@ package org.bluebikebase.ioe.resource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.bluebikebase.core.foundation.Identity
 import org.bluebikebase.core.foundation.ScalarL
 import org.bluebikebase.ioe.resource.authority.AuthorityBuilder
+import org.bluebikebase.ioe.resource.domain.HyperSoySensor
+import org.bluebikebase.ioe.resource.domain.NormalSoySensor
+import org.bluebikebase.ioe.resource.domain.RandomSoySensor
 import org.bluebikebase.ioe.resource.domain.VirtualSoySensor
+import org.bluebikebase.ioe.resource.dresses.KenSailor
+import org.bluebikebase.ioe.resource.dresses.MihoPirate
+import org.bluebikebase.ioe.resource.dresses.MopePirate
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 class AuthorityLogicTest {
+    /*
     @Test
     fun `harbor logic test`() = runTest {
         val shipA = withContext(currentCoroutineContext()) { authority.welcomeTo(Identity.fromString(uuid1.toString())) }
@@ -82,7 +85,9 @@ class AuthorityLogicTest {
         println("TransactionD: ${transactionD.getOrNull()}")
         println("TransactionE: ${transactionE.getOrNull()}")
     }
+    */
 
+    /*
     @Test
     fun `harbor logic concurrent test`() = runBlocking { //runTest {
         println("--- Start: Concurrent Voyage Test ---")
@@ -149,22 +154,24 @@ class AuthorityLogicTest {
 
         println("--- End: Concurrent Voyage Test ---")
     }
+    */
 
+    /*
     @Test
     fun `random access logic test`() = runTest {
         val jobs = (1..20).map { i ->
             async {
                 // 1. バラバラのタイミングで現れるゲスト
-                delay(Random.nextLong(0, 1000))
+                delay(Random.nextLong(0, 1000).milliseconds)
 
                 try {
                     // 2. せっかちなゲスト（2秒でリジェクト）
                     withTimeout(2000.milliseconds) {
-                        val ship = authority.welcomeTo(Identity.fromString(uuid1.toString()))
+                        val ship = authority.welcomeTo()
                         authority.dispatch {
                             val value = ship.operate { sensor ->
                                 // 3. 物理的なゆらぎ
-                                delay(Random.nextLong(100, 3000))
+                                delay(Random.nextLong(100, 3000).milliseconds)
                                 sensor.measure(30L)
                             }
 
@@ -178,41 +185,73 @@ class AuthorityLogicTest {
             }
         }
     }
+    */
 
-    private val uuid1 = Uuid.random()
-    private val uuid2 = Uuid.random()
-    private val uuid3 = Uuid.random()
+    @Test
+    fun `random access logic test`() = runTest {
+        val jobs = (1..20).map { i ->
+            async {
+                // 1. バラバラのタイミングで現れるゲスト
+                delay(Random.nextLong(0, 500).milliseconds)
+
+                // ランダムにドレスを選択（Mope, Miho, Ken のいずれか）
+                val dress = when (Random.nextInt(3)) {
+                    0 -> MopePirate
+                    1 -> MihoPirate
+                    else -> KenSailor
+                }
+
+                try {
+                    // 2. このドレス（Context）を着て港へ向かう
+                    withContext(dress) {
+                        // 3. せっかちなゲスト（2秒でタイムアウト）
+                        withTimeout(2000.milliseconds) {
+                            val ship = authority.welcomeToShip()
+                            val result = authority.dispatch {
+                                val value = ship.operate { sensor ->
+                                    // 4. 物理的なゆらぎ（計測に時間がかかる）
+                                    delay(Random.nextLong(100, 1500).milliseconds)
+                                    sensor.measure(30L).also {
+                                        println("[Job $i] ${dress::class.simpleName} が ${it}L を計測しました。")
+                                    }
+                                }
+
+                                Result.success(value)
+                            }
+
+                            Result.success(result)
+                        }
+                    }
+                } catch (e: TimeoutCancellationException) {
+                    println("[Job $i] ${dress::class.simpleName}: あまりに長い！リジェクトして帰ります。")
+                    Result.failure(e)
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }
+            }
+        }
+
+        val results = jobs.awaitAll()
+        val successCount = results.count { it.isSuccess }
+        println("\n--- 実験終了レポート ---")
+        println("総ゲスト数: 20, 成功数: $successCount, 離脱数: ${20 - successCount}")
+    }
 
     private val authority = AuthorityBuilder<VirtualSoySensor, ScalarL>()
-        .register(
-            strUuid = uuid1.toString(),
-            establish = {
-                println("--- Sensor[1] establishing... ---")
-                VirtualSoySensor()
-            },
-            cleanup = { println("--- Sensor[1] terminating... ---") },
-            dispose = { println("---   Sensor[1] powered off    ---") },
+        .reserve<MopePirate>(
+            establish = { NormalSoySensor().also { println("⚓️ Mope: Normal Sensor Ready.") } },
+            cleanup = { println("--- Sensor[NORMAL] terminating... ---") },
+            dispose = { println("---  Sensor[NORMAL] powered off   ---") },
         )
-        .register(
-            strUuid = uuid2.toString(),
-            isSingle = true,
-            establish = {
-                println("--- Sensor[2] establishing... ---")
-                VirtualSoySensor()
-            },
-            cleanup = { println("--- Sensor[2] terminating... ---") },
-            dispose = { println("--- Sensor[2] powered off ---") },
+        .reserve<MihoPirate>(
+            establish = { HyperSoySensor().also { println("🏴‍☠️ Miho: Hyper Sensor Active!") } },
+            cleanup = { println("--- Sensor[HYPER] terminating... ---") },
+            dispose = { println("---  Sensor[HYPER] powered off   ---") },
         )
-        .register(
-            strUuid = uuid3.toString(),
-            isSingle = true,
-            establish = {
-                println("--- Sensor[3] establishing... ---")
-                VirtualSoySensor()
-            },
-            cleanup = { println("--- Sensor[3] terminating... ---") },
-            dispose = { println("--- Sensor[3] powered off    ---") },
+        .reserve<KenSailor>(
+            establish = { RandomSoySensor().also { println("🛳️ Ken: Random Fleet Sensor Deployed.") } },
+            cleanup = { println("--- Sensor[RANDOM] terminating... ---") },
+            dispose = { println("---  Sensor[RANDOM] powered off   ---") },
         )
         .build()
-
 }

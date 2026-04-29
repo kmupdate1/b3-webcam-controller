@@ -1,9 +1,9 @@
 package org.bluebikebase.wcc.domain.camera.entity
 
+import org.bluebikebase.core.identity.generateHash
 import org.bluebikebase.core.quantity.HeartBeat
 import org.bluebikebase.wcc.domain.common.validate
 import org.bluebikebase.wcc.domain.error.B3WCCInvalidValidationException
-import org.bluebikebase.wcc.domain.util.generateHash
 import kotlin.io.encoding.Base64
 import kotlin.jvm.JvmInline
 
@@ -23,7 +23,7 @@ value class CameraName private constructor(val name: String) {
                 .replace(Regex("\\s+"), "-")
                 .lowercase()
 
-            val hash = generateHash(seed = (row + HeartBeat.now()).encodeToByteArray())
+            val hash = generateHash(bytes = (row + HeartBeat.now()).encodeToByteArray())
             val suffix = Base64.UrlSafe.encode(hash.take(10).toByteArray())
                 .replace("=", "")
 
