@@ -17,6 +17,4 @@ abstract class VesselSailorDress(
             return B3Hash.fromBytes(name.encodeToByteArray())
         }
     }
-
-    final override val destinationId: UniqueID = createIdFromKlass(this::class)
 }

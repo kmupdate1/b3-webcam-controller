@@ -1,16 +1,8 @@
 package org.bluebikebase.ioe.resource
 
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import org.bluebikebase.core.foundation.ScalarL
 import org.bluebikebase.ioe.resource.authority.AuthorityApplicable
-import org.bluebikebase.ioe.resource.authority.context.VesselDress
 import org.bluebikebase.ioe.resource.domain.HyperSoySensor
 import org.bluebikebase.ioe.resource.domain.NormalSoySensor
 import org.bluebikebase.ioe.resource.domain.RandomSoySensor
@@ -28,10 +20,10 @@ class AuthorityLogicTest {
     @Test
     fun `random access logic test`() = runBlocking {
         println()
-        val jobs = (1..10).map { i ->
+        val jobs = (1..1_000).map { i ->
             async {
                 // 1. バラバラのタイミングで現れるゲスト
-                delay(Random.nextLong(0, 500).milliseconds)
+                delay(Random.nextLong(500, 5_000).milliseconds)
 
                 // ランダムにドレスを選択（Mope, Miho, Ken のいずれか）
                 val dress = when (Random.nextInt(3)) {
