@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
+import org.bluebikebase.core.identity.B3Hash
 import org.bluebikebase.core.identity.UniqueID
 import org.bluebikebase.ioe.resource.authority.context.VesselDress
 import org.bluebikebase.ioe.resource.berth.Berth
@@ -17,9 +18,10 @@ class HarborAuthority<T, R> internal constructor(
 ) : Authority<T, R> {
     override suspend fun welcomeToShip(): Ship<T, R> {
         val currentContext = currentCoroutineContext()
-        val kDress = currentContext[VesselDress]
+        val kDress = currentContext[VesselDress]?.get(VesselDress)
             ?: throw B3IoeIllegalResourceException("No Vessel Dress found")
-        val destinationId = kDress.destinationId
+        val destinationId = kDress::class.qualifiedName?.run { B3Hash.fromBytes(this.encodeToByteArray()) }
+            ?: throw B3IoeIllegalResourceException("No Destination ID found")
 
         return berths[destinationId]?.run {
             val establish = registry.establishes.getValue(destinationId)
@@ -27,7 +29,7 @@ class HarborAuthority<T, R> internal constructor(
             val dispose = registry.disposes.getValue(destinationId)
 
             invite(establish, cleanup, dispose)
-        } ?: throw B3IoeIllegalResourceException("Not yet initialized: $destinationId")
+        } ?: throw B3IoeIllegalResourceException("Not reserved destination ID: $destinationId")
     }
 
     override suspend fun dispatch(transaction: ShipTransaction<R>): Result<R> =

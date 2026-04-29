@@ -5,7 +5,6 @@ import kotlin.coroutines.CoroutineContext
 
 interface VesselDress : CoroutineContext.Element {
     companion object Key : CoroutineContext.Key<VesselDress>
-    override val key: CoroutineContext.Key<*> get() = Key
 
     val destinationId: UniqueID
 }

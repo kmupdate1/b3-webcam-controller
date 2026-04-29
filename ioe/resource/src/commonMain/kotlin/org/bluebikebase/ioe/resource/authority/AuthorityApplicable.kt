@@ -14,14 +14,14 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
 
-class AuthorityBuilder<T, R> {
+class AuthorityApplicable<T, R> {
     inline fun <reified D : VesselDress> reserve(
         noinline establish: suspend () -> T,
         noinline cleanup: suspend (T) -> Unit,
         noinline dispose: suspend (T) -> Unit,
-    ): AuthorityBuilder<T, R> {
+    ): AuthorityApplicable<T, R> {
         val kDress = D::class
-        val dressName = kDress.qualifiedName?.also { println("Instance type: $it") }
+        val dressName = kDress.qualifiedName
             ?: throw B3IoeIllegalResourceException("Anonymous dress is not allowed.")
 
         val destinationId = B3Hash.fromBytes(dressName.encodeToByteArray())
@@ -45,7 +45,7 @@ class AuthorityBuilder<T, R> {
         return this
     }
 
-    fun build(): Authority<T, R> = authority
+    fun applicate(): Authority<T, R> = authority
 
     @PublishedApi
     internal val authority: HarborAuthority<T, R> = HarborAuthority(
