@@ -1,9 +1,8 @@
 package org.bluebikebase.ioe.resource.authority
 
 import org.bluebikebase.core.identity.B3Hash
+import org.bluebikebase.ioe.resource.authority.context.DressType
 import org.bluebikebase.ioe.resource.authority.context.VesselDress
-import org.bluebikebase.ioe.resource.authority.context.VesselPirateDress
-import org.bluebikebase.ioe.resource.authority.context.VesselSailorDress
 import org.bluebikebase.ioe.resource.berth.FleetBerth
 import org.bluebikebase.ioe.resource.berth.LoneWolfBerth
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
@@ -18,11 +17,10 @@ class AuthorityApplicable<T, R> {
         noinline establish: suspend () -> T,
         noinline cleanup: suspend (T) -> Unit,
         noinline dispose: suspend (T) -> Unit,
+        dressType: DressType,
     ): AuthorityApplicable<T, R> {
-        val kDress = D::class
-        val dressName = kDress.qualifiedName
-            ?: throw B3IoeIllegalResourceException("Anonymous dress is not allowed.")
-
+        val dressName = D::class.qualifiedName
+            ?: throw B3IoeIllegalResourceException("No instance QFN found")
         val destinationId = B3Hash.fromBytes(dressName.encodeToByteArray())
 
          authority.apply {
@@ -32,13 +30,13 @@ class AuthorityApplicable<T, R> {
                  disposes[destinationId] = Dispose(dispose)
              }
 
-             when (kDress) {
-                 is VesselSailorDress ->
+             when (dressType) {
+                 DressType.SAILOR ->
                      fleetBerths[destinationId] = FleetBerth(
                          vendor = ClassicalFleetVendor(mutableSetOf()),
                      )
 
-                 is VesselPirateDress ->
+                 DressType.PIRATES ->
                      lwBerths[destinationId] = LoneWolfBerth(
                          vendor = ClassicalLoneWolfVendor(mutableSetOf()),
                      )

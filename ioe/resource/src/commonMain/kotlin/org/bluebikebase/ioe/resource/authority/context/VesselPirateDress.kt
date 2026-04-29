@@ -7,7 +7,7 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.reflect.KClass
 
 abstract class VesselPirateDress(
-    val purpose: String = "PIRATE",
+    override val dressType: DressType = DressType.PIRATES,
 ) : AbstractCoroutineContextElement(VesselDress.Key), VesselDress {
     companion object {
         fun createIdFromKlass(klass: KClass<out VesselPirateDress>): UniqueID {

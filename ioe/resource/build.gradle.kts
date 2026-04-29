@@ -12,6 +12,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.bluebikebase.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlin.reflect)
         }
         commonTest.dependencies {
             implementation(libs.bluebikebase.core)

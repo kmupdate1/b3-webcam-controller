@@ -9,7 +9,6 @@ import org.bluebikebase.ioe.resource.domain.RandomSoySensor
 import org.bluebikebase.ioe.resource.domain.VirtualSoySensor
 import org.bluebikebase.ioe.resource.dresses.KenSailor
 import org.bluebikebase.ioe.resource.dresses.MihoPirate
-import org.bluebikebase.ioe.resource.dresses.MihoSailor
 import org.bluebikebase.ioe.resource.dresses.MopeSailor
 import kotlin.random.Random
 import kotlin.test.Test
@@ -28,14 +27,12 @@ class AuthorityLogicTest {
 
                 val minute = SECOND * 60
 
-                when (Random.nextInt(3)) {
+                when (val rand = Random.nextInt(3)) {
                     0 -> try {
                         withContext(MopeSailor) {
                             withTimeout(minute) {
                                 authority.dispatch {
-                                    println("まずはここだね")
                                     val ship = authority.welcomeToSailor()
-                                    println("ここまで来たね")
                                     val value = ship.operate { sensor ->
                                         delay(Random.nextLong(10, 1500).milliseconds)
 
@@ -60,6 +57,7 @@ class AuthorityLogicTest {
                         withContext(MihoPirate) {
                             withTimeout(minute * 3) {
                                 authority.dispatch {
+                                    println("まずはここだね: $rand")
                                     val ship = authority.welcomeToPirate()
                                     val value = ship.operate { sensor ->
                                         delay(Random.nextLong(10, 1500).milliseconds)
@@ -124,16 +122,19 @@ class AuthorityLogicTest {
             establish = { NormalSoySensor().also { println("⚓️ Mope: Normal Sensor Ready.") } },
             cleanup = { println("--- Sensor[NORMAL] terminating... ---") },
             dispose = { println("---  Sensor[NORMAL] powered off   ---") },
+            dressType = MopeSailor.dressType,
         )
-        .reserve<MihoSailor>(
+        .reserve<MihoPirate>(
             establish = { HyperSoySensor().also { println("🏴‍☠️ Miho: Hyper Sensor Active!") } },
             cleanup = { println("--- Sensor[HYPER] terminating... ---") },
             dispose = { println("---  Sensor[HYPER] powered off   ---") },
+            dressType = MihoPirate.dressType,
         )
         .reserve<KenSailor>(
             establish = { RandomSoySensor().also { println("🛳️ Ken: Random Fleet Sensor Deployed.") } },
             cleanup = { println("--- Sensor[RANDOM] terminating... ---") },
             dispose = { println("---  Sensor[RANDOM] powered off   ---") },
+            dressType = KenSailor.dressType,
         )
         .applicate()
 

@@ -47,7 +47,7 @@ class HarborAuthority<T, R> internal constructor(
             val cleanup = registry.cleanups.getValue(destinationId)
             val dispose = registry.disposes.getValue(destinationId)
 
-            invite(establish, cleanup, dispose).also { println("invite()したね") }
+            invite(establish, cleanup, dispose)
         } ?: throw B3IoeIllegalResourceException("Not reserved destination ID: $destinationId")
     }
 
