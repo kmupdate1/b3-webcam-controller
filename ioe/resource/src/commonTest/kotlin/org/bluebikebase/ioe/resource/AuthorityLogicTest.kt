@@ -10,6 +10,8 @@ import org.bluebikebase.ioe.resource.domain.VirtualSoySensor
 import org.bluebikebase.ioe.resource.dresses.KenSailor
 import org.bluebikebase.ioe.resource.dresses.MihoPirate
 import org.bluebikebase.ioe.resource.dresses.MopeSailor
+import org.bluebikebase.ioe.resource.strategy.ClassicalFleetVendor
+import org.bluebikebase.ioe.resource.strategy.GovernedPooledVendor
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -121,7 +123,7 @@ class AuthorityLogicTest {
             establish = { NormalSoySensor().also { println("⚓️ Mope: Normal Sensor Ready.") } },
             cleanup = { println("--- Sensor[NORMAL] terminating... ---") },
             dispose = { println("---  Sensor[NORMAL] powered off   ---") },
-            vendor = TODO("Vendor")
+            vendor = ClassicalFleetVendor(),
         )
         .reserve<MihoPirate>(
             establish = { HyperSoySensor().also { println("🏴‍☠️ Miho: Hyper Sensor Active!") } },
@@ -132,7 +134,7 @@ class AuthorityLogicTest {
             establish = { RandomSoySensor().also { println("🛳️ Ken: Random Fleet Sensor Deployed.") } },
             cleanup = { println("--- Sensor[RANDOM] terminating... ---") },
             dispose = { println("---  Sensor[RANDOM] powered off   ---") },
-            vendor = TODO("Vendor")
+            vendor = GovernedPooledVendor()
         )
         .applicate()
 
