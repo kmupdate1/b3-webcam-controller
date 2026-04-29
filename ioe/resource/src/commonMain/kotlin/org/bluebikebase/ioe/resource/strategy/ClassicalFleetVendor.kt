@@ -1,10 +1,15 @@
 package org.bluebikebase.ioe.resource.strategy
 
+import org.bluebikebase.ioe.resource.foundation.Container
 import org.bluebikebase.ioe.resource.vessel.Fleet
-import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
+import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 
-internal class ClassicalFleetVendor<T, R> : FleetShipVendor<T, R> {
-    override fun vend(ships: MutableSet<Fleet<T, R>>, establish: Establish<T>): Fleet<T, R> {
-        TODO("Not yet implemented")
-    }
+@PublishedApi
+internal class ClassicalFleetVendor<T, R>(
+    override val fleets: MutableSet<Fleet<T, R>>,
+) : FleetShipVendor<T, R> {
+    override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> =
+        fleets.firstOrNull() ?: Fleet<T, R>(container, cleanup, dispose)
+            .also { fleets += it }
 }

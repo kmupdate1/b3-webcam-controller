@@ -1,14 +1,14 @@
 package org.bluebikebase.ioe.resource.authority
 
-import org.bluebikebase.core.foundation.ScalarL
 import org.bluebikebase.core.identity.B3Hash
 import org.bluebikebase.ioe.resource.authority.context.VesselDress
 import org.bluebikebase.ioe.resource.authority.context.VesselPirateDress
 import org.bluebikebase.ioe.resource.authority.context.VesselSailorDress
 import org.bluebikebase.ioe.resource.berth.FleetBerth
 import org.bluebikebase.ioe.resource.berth.LoneWolfBerth
-import org.bluebikebase.ioe.resource.berth.ShipScaleSize
 import org.bluebikebase.ioe.resource.error.B3IoeIllegalResourceException
+import org.bluebikebase.ioe.resource.strategy.ClassicalFleetVendor
+import org.bluebikebase.ioe.resource.strategy.ClassicalLoneWolfVendor
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Establish
@@ -34,12 +34,14 @@ class AuthorityApplicable<T, R> {
 
              when (kDress) {
                  is VesselSailorDress ->
-                     fleetBerths[destinationId] =
-                         FleetBerth(fleets = mutableSetOf())
+                     fleetBerths[destinationId] = FleetBerth(
+                         vendor = ClassicalFleetVendor(mutableSetOf()),
+                     )
 
                  is VesselPirateDress ->
-                     lwBerths[destinationId] =
-                         LoneWolfBerth(wolves = mutableSetOf())
+                     lwBerths[destinationId] = LoneWolfBerth(
+                         vendor = ClassicalLoneWolfVendor(mutableSetOf()),
+                     )
              }
          }
 

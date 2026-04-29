@@ -10,7 +10,6 @@ import org.bluebikebase.ioe.resource.domain.VirtualSoySensor
 import org.bluebikebase.ioe.resource.dresses.KenSailor
 import org.bluebikebase.ioe.resource.dresses.MihoPirate
 import org.bluebikebase.ioe.resource.dresses.MihoSailor
-import org.bluebikebase.ioe.resource.dresses.MopePirate
 import org.bluebikebase.ioe.resource.dresses.MopeSailor
 import kotlin.random.Random
 import kotlin.test.Test
@@ -27,48 +26,84 @@ class AuthorityLogicTest {
                 // 1. バラバラのタイミングで現れるゲスト
                 delay(Random.nextLong(500, 5_000).milliseconds)
 
-                val block = withTimeout(1_000.milliseconds * 60 * 60 * 24) {
-                    val result = authority.dispatch {
-                        val value = ship.operate { sensor ->
-                            // 4. 物理的なゆらぎ（計測に時間がかかる）
-                            delay(Random.nextLong(10, 1500).milliseconds)
-                            sensor.measure(30L).also {
-                                println("[Job $i] \"${dress::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
+                val minute = SECOND * 60
+
+                when (Random.nextInt(3)) {
+                    0 -> try {
+                        withContext(MopeSailor) {
+                            withTimeout(minute) {
+                                authority.dispatch {
+                                    val ship = authority.welcomeToSailor()
+                                    val value = ship.operate { sensor ->
+                                        delay(Random.nextLong(10, 1500).milliseconds)
+
+                                        sensor.measure(30L).also {
+                                            println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
+                                        }
+                                    }
+
+                                    Result.success(value)
+                                }
                             }
                         }
-
-                        Result.success(value)
+                    } catch (e: TimeoutCancellationException) {
+                        println("[Job $i] ${MopeSailor::class.simpleName}: あまりに長い！リジェクトして帰ります。: ${e.message}")
+                        Result.failure(e)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Result.failure(e)
                     }
 
-                    Result.success(result)
-                }
+                    1 -> try {
+                        withContext(MihoPirate) {
+                            withTimeout(minute * 3) {
+                                authority.dispatch {
+                                    val ship = authority.welcomeToPirate()
+                                    val value = ship.operate { sensor ->
+                                        delay(Random.nextLong(10, 1500).milliseconds)
 
+                                        sensor.measure(30L).also {
+                                            println("[Job $i] \"${MihoPirate::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
+                                        }
+                                    }
 
-                val dress = when (Random.nextInt(3)) {
-                    0 -> withContext(MopeSailor) {
-                        val ship = authority.welcomeToSailor()
+                                    Result.success(value)
+                                }
+                            }
+                        }
+                    } catch (e: TimeoutCancellationException) {
+                        println("[Job $i] ${MihoPirate::class.simpleName}: あまりに長い！リジェクトして帰ります。: ${e.message}")
+                        Result.failure(e)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Result.failure(e)
                     }
 
-                    1 -> withContext(MihoPirate) {
-                        val ship = authority.welcomeToPirate()
-                    }
 
-                    else -> withContext(KenSailor) {
-                        val ship = authority.welcomeToPirate()
-                    }
-                }
+                    else -> try {
+                        withContext(KenSailor) {
+                            withTimeout(minute / 2) {
+                                authority.dispatch {
+                                    val ship = authority.welcomeToPirate()
+                                    val value = ship.operate { sensor ->
+                                        delay(Random.nextLong(10, 1500).milliseconds)
 
-                try {
-                    // 2. このドレス（Context）を着て港へ向かう
-                    withContext(dress) {
-                        // 3. 24h でタイムアウト
+                                        sensor.measure(30L).also {
+                                            println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
+                                        }
+                                    }
+
+                                    Result.success(value)
+                                }
+                            }
+                        }
+                    } catch (e: TimeoutCancellationException) {
+                        println("[Job $i] ${KenSailor::class.simpleName}: あまりに長い！リジェクトして帰ります。: ${e.message}")
+                        Result.failure(e)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Result.failure(e)
                     }
-                } catch (e: TimeoutCancellationException) {
-                    println("[Job $i] ${dress::class.simpleName}: あまりに長い！リジェクトして帰ります。")
-                    Result.failure(e)
-                } catch (e: Exception) {
-                    println(e.message)
-                    Result.failure(e)
                 }
             }
         }
@@ -99,4 +134,8 @@ class AuthorityLogicTest {
             dispose = { println("---  Sensor[RANDOM] powered off   ---") },
         )
         .applicate()
+
+    companion object {
+        val SECOND = 1_000.milliseconds
+    }
 }
