@@ -9,7 +9,10 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 internal class ClassicalFleetVendor<T, R>(
     override val fleets: MutableSet<Fleet<T, R>>,
 ) : FleetShipVendor<T, R> {
-    override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> =
-        fleets.firstOrNull() ?: Fleet<T, R>(container, cleanup, dispose)
-            .also { fleets += it }
+    override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> {
+        val masterFleet = fleets.firstOrNull()
+
+        return masterFleet?.replicate() ?: Fleet<T, R>(container, cleanup, dispose)
+            .also { fleets.add(it) }
+    }
 }

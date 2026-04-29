@@ -11,5 +11,5 @@ internal class ClassicalLoneWolfVendor<T, R>(
 ) : LoneWolfShipVendor<T, R> {
     override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): LoneWolf<T, R> =
         wolves.firstOrNull() ?: LoneWolf<T, R>(container, cleanup, dispose)
-            .also { wolves += it }
+            .also { wolves.add(it) }
 }

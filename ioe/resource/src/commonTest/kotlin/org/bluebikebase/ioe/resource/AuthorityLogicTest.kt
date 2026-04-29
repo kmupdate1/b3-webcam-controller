@@ -33,7 +33,9 @@ class AuthorityLogicTest {
                         withContext(MopeSailor) {
                             withTimeout(minute) {
                                 authority.dispatch {
+                                    println("まずはここだね")
                                     val ship = authority.welcomeToSailor()
+                                    println("ここまで来たね")
                                     val value = ship.operate { sensor ->
                                         delay(Random.nextLong(10, 1500).milliseconds)
 
