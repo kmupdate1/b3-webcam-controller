@@ -8,8 +8,8 @@ import org.bluebikebase.ioe.resource.domain.NormalSoySensor
 import org.bluebikebase.ioe.resource.domain.RandomSoySensor
 import org.bluebikebase.ioe.resource.domain.VirtualSoySensor
 import org.bluebikebase.ioe.resource.dresses.KenSailor
-import org.bluebikebase.ioe.resource.dresses.MihoPirate
-import org.bluebikebase.ioe.resource.dresses.MopePirate
+import org.bluebikebase.ioe.resource.dresses.MihoSailor
+import org.bluebikebase.ioe.resource.dresses.MopeSailor
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -20,23 +20,22 @@ class AuthorityLogicTest {
     @Test
     fun `random access logic test`() = runBlocking {
         println()
-        val jobs = (1..1_000).map { i ->
+        val jobs = (1..20_000).map { i ->
             async {
                 // 1. バラバラのタイミングで現れるゲスト
                 delay(Random.nextLong(500, 5_000).milliseconds)
 
-                // ランダムにドレスを選択（Mope, Miho, Ken のいずれか）
                 val dress = when (Random.nextInt(3)) {
-                    0 -> MopePirate
-                    1 -> MihoPirate
+                    0 -> MopeSailor
+                    1 -> MihoSailor
                     else -> KenSailor
                 }
 
                 try {
                     // 2. このドレス（Context）を着て港へ向かう
                     withContext(dress) {
-                        // 3. 20秒でタイムアウト
-                        withTimeout(20_000.milliseconds) {
+                        // 3. 24h でタイムアウト
+                        withTimeout(1_000.milliseconds * 60 * 60 * 24) {
                             val ship = authority.welcomeToShip()
                             val result = authority.dispatch {
                                 val value = ship.operate { sensor ->
@@ -57,7 +56,7 @@ class AuthorityLogicTest {
                     println("[Job $i] ${dress::class.simpleName}: あまりに長い！リジェクトして帰ります。")
                     Result.failure(e)
                 } catch (e: Exception) {
-                    println(e.message + "\n")
+                    println(e.message)
                     Result.failure(e)
                 }
             }
@@ -65,19 +64,19 @@ class AuthorityLogicTest {
 
         val results = jobs.awaitAll()
         val successCount = results.count { it.isSuccess }
-        println("--- 実験終了レポート ---")
+        println("\n--- 実験終了レポート ---")
         println("総ゲスト数: ${jobs.size}, 成功数: $successCount, 離脱数: ${jobs.size - successCount}\n")
     }
 
 
     // 予約票を港湾管理局に提出する
     private val authority = AuthorityApplicable<VirtualSoySensor, ScalarL>()
-        .reserve<MopePirate>(
+        .reserve<MopeSailor>(
             establish = { NormalSoySensor().also { println("⚓️ Mope: Normal Sensor Ready.") } },
             cleanup = { println("--- Sensor[NORMAL] terminating... ---") },
             dispose = { println("---  Sensor[NORMAL] powered off   ---") },
         )
-        .reserve<MihoPirate>(
+        .reserve<MihoSailor>(
             establish = { HyperSoySensor().also { println("🏴‍☠️ Miho: Hyper Sensor Active!") } },
             cleanup = { println("--- Sensor[HYPER] terminating... ---") },
             dispose = { println("---  Sensor[HYPER] powered off   ---") },

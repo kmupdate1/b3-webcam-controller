@@ -28,7 +28,7 @@ class AuthorityApplicable<T, R> {
 
          authority.apply {
              val ships = mutableSetOf(boardOnTheFlyingDutchman(destinationId))
-             val limit = if (kDress is VesselPirateDress) ScalarL.ONE else ScalarL.of(100L)
+             val limit = if (kDress is VesselPirateDress) ScalarL.ONE else ScalarL.of(5_000L)
 
              registry.run {
                  establishes[destinationId] = Establish(establish)
