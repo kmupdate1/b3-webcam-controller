@@ -57,7 +57,6 @@ class AuthorityLogicTest {
                         withContext(MihoPirate) {
                             withTimeout(minute * 3) {
                                 authority.dispatch {
-                                    println("まずはここだね: $rand")
                                     val ship = authority.welcomeToPirate()
                                     val value = ship.operate { sensor ->
                                         delay(Random.nextLong(10, 1500).milliseconds)
