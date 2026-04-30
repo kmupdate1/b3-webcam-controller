@@ -124,11 +124,12 @@ Users can implement custom strategies:
 
 ```kotlin
 class AdaptiveVendor<T, R> : FleetShipVendor<T, R> {
-    override val fleets = mutableSetOf<Fleet<T, R>>()
-
     override suspend fun vend(/* params */): Fleet<T, R> {
         // custom scaling logic (CPU, queue, latency, etc.)
     }
+
+    override val fleets: SetOf<Fleet<T, R>> get() = _fleets
+    private val _fleets = mutableSetOf<Fleet<T, R>>()
 }
 ```
 
