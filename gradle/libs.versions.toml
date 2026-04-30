@@ -5,6 +5,7 @@ kotlin-crypto = "0.8.0"
 ktor = "3.4.3"
 kotlinx = "1.10.2"
 reflect = "2.3.21"
+stately = "2.1.0"
 
 [libraries]
 bluebikebase-core = { group = "org.bluebikebase", name = "core", version.ref = "b3-lib" }
@@ -24,6 +25,8 @@ ktor-serialization = { group = "io.ktor", name = "ktor-serialization", version.r
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.11.0" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx" }
+
+touchlab-stately-iso-collections = { group = "co.touchlab", name = "stately-iso-collections", version.ref = "stately" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

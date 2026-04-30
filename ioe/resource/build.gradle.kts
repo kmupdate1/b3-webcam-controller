@@ -19,5 +19,8 @@ kotlin {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
         }
+        nativeMain.dependencies {
+            implementation(libs.touchlab.stately.iso.collections)
+        }
     }
 }
