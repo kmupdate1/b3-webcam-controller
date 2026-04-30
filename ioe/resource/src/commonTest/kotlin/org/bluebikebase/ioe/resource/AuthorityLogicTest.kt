@@ -29,22 +29,21 @@ class AuthorityLogicTest {
 
                 val minute = SECOND * 60
 
-                when (val rand = Random.nextInt(3)) {
+                val rand = Random.nextInt(3)
+                val result = when (rand) {
                     0 -> try {
                         withContext(MopeSailor) {
                             withTimeout(minute) {
-                                authority.dispatch {
-                                    val ship = authority.welcomeToSailor()
-                                    val value = ship.operate { sensor ->
-                                        delay(Random.nextLong(10, 1500).milliseconds)
+                                val ship = authority.welcomeToSailor()
+                                val value = ship.operate { sensor ->
+                                    delay(Random.nextLong(10, 1500).milliseconds)
 
-                                        sensor.measure(30L).also {
-                                            println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
-                                        }
+                                    sensor.measure(30L).also {
+                                        println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
                                     }
-
-                                    Result.success(value)
                                 }
+
+                                Result.success(value)
                             }
                         }
                     } catch (e: TimeoutCancellationException) {
@@ -58,18 +57,16 @@ class AuthorityLogicTest {
                     1 -> try {
                         withContext(MihoPirate) {
                             withTimeout(minute * 3) {
-                                authority.dispatch {
-                                    val ship = authority.welcomeToPirate()
-                                    val value = ship.operate { sensor ->
-                                        delay(Random.nextLong(10, 1500).milliseconds)
+                                val ship = authority.welcomeToPirate()
+                                val value = ship.operate { sensor ->
+                                    delay(Random.nextLong(10, 1500).milliseconds)
 
-                                        sensor.measure(30L).also {
-                                            println("[Job $i] \"${MihoPirate::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
-                                        }
+                                    sensor.measure(30L).also {
+                                        println("[Job $i] \"${MihoPirate::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
                                     }
-
-                                    Result.success(value)
                                 }
+
+                                Result.success(value)
                             }
                         }
                     } catch (e: TimeoutCancellationException) {
@@ -84,18 +81,16 @@ class AuthorityLogicTest {
                     else -> try {
                         withContext(KenSailor) {
                             withTimeout(minute / 20) {
-                                authority.dispatch {
-                                    val ship = authority.welcomeToSailor()
-                                    val value = ship.operate { sensor ->
-                                        delay(Random.nextLong(10, 1500).milliseconds)
+                                val ship = authority.welcomeToSailor()
+                                val value = ship.operate { sensor ->
+                                    delay(Random.nextLong(10, 1500).milliseconds)
 
-                                        sensor.measure(30L).also {
-                                            println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
-                                        }
+                                    sensor.measure(30L).also {
+                                        println("[Job $i] \"${MopeSailor::class.simpleName}\"センサが \'${it.value.toInt()}\' を観測")
                                     }
-
-                                    Result.success(value)
                                 }
+
+                                Result.success(value)
                             }
                         }
                     } catch (e: TimeoutCancellationException) {
@@ -106,6 +101,8 @@ class AuthorityLogicTest {
                         Result.failure(e)
                     }
                 }
+
+                result
             }
         }
 

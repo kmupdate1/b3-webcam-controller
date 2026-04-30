@@ -7,17 +7,18 @@ import org.bluebikebase.ioe.resource.vessel.lifecycle.Cleanup
 import org.bluebikebase.ioe.resource.vessel.lifecycle.Dispose
 
 class ClassicalFleetVendor<T, R>(
-    override val fleets: MutableSet<Fleet<T, R>> = mutableSetOf(),
     private val scaleLimit: Long = 10L,
 ) : FleetShipVendor<T, R> {
     override suspend fun vend(container: Container<T>, cleanup: Cleanup<T>, dispose: Dispose<T>): Fleet<T, R> {
-        val masterFleet = fleets.also { println("CLASSICAL: ${it.size}隻") }.firstOrNull()
+        val masterFleet = _fleets.firstOrNull()
 
         return masterFleet?.let {
             val limit = ScalarL.of(scaleLimit)
-            if (fleets.size < limit.value) it.replicate()
-            else it
-        }?.also { fleets.add(it) }
-            ?: Fleet<T, R>(container, cleanup, dispose).also { fleets.add(it) }
+            if (_fleets.size < limit.value) it.replicate() else it
+        }?.also { _fleets.add(it) }
+            ?: Fleet<T, R>(container, cleanup, dispose).also { _fleets.add(it) }
     }
+
+    override val fleets: Set<Fleet<T, R>> get() = _fleets
+    private val _fleets = mutableSetOf<Fleet<T, R>>()
 }
